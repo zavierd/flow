@@ -224,9 +224,9 @@ class SKUAdmin(BaseModelAdmin, BulkActionMixin, DisplayMixin):
     
     class Media:
         css = {
-            'all': ('admin/css/sku_admin.css',)
+            'all': ('admin/css/sku_admin.css', 'admin/css/sku_bulk_actions.css')
         }
-        js = ('admin/js/enhanced_admin.js', 'admin/js/sku_dimension_sync.js')
+        js = ('admin/js/enhanced_admin.js', 'admin/js/sku_dimension_sync.js', 'admin/js/sku_bulk_actions.js')
     
     fieldsets = (
         ('基本信息', {

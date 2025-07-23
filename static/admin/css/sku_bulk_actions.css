@@ -1,0 +1,178 @@
+/* SKU批量操作样式优化 */
+
+/* 批量操作按钮样式 */
+.actions select[name="action"] option[value*="bulk_"] {
+    font-weight: 600;
+}
+
+.actions select[name="action"] option[value="bulk_update_status_action"] {
+    background: linear-gradient(90deg, #007bff 0%, #0056b3 100%);
+    color: white;
+}
+
+.actions select[name="action"] option[value="bulk_set_active_action"] {
+    background: linear-gradient(90deg, #28a745 0%, #1e7e34 100%);
+    color: white;
+}
+
+.actions select[name="action"] option[value="bulk_set_inactive_action"] {
+    background: linear-gradient(90deg, #6c757d 0%, #495057 100%);
+    color: white;
+}
+
+.actions select[name="action"] option[value="bulk_set_out_of_stock_action"] {
+    background: linear-gradient(90deg, #ffc107 0%, #e0a800 100%);
+    color: white;
+}
+
+/* 状态显示优化 */
+.field-status {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 11px;
+    padding: 3px 6px;
+    border-radius: 3px;
+    display: inline-block;
+    min-width: 60px;
+    text-align: center;
+}
+
+/* 状态颜色 */
+.changelist-table .field-status {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+}
+
+/* 在售状态 */
+tr[data-status="active"] .field-status,
+.status-active {
+    background: #d4edda !important;
+    color: #155724 !important;
+    border-color: #c3e6cb !important;
+}
+
+/* 停售状态 */
+tr[data-status="inactive"] .field-status,
+.status-inactive {
+    background: #f8d7da !important;
+    color: #721c24 !important;
+    border-color: #f5c6cb !important;
+}
+
+/* 缺货状态 */
+tr[data-status="out_of_stock"] .field-status,
+.status-out_of_stock {
+    background: #fff3cd !important;
+    color: #856404 !important;
+    border-color: #ffeaa7 !important;
+}
+
+/* 停产状态 */
+tr[data-status="discontinued"] .field-status,
+.status-discontinued {
+    background: #d1ecf1 !important;
+    color: #0c5460 !important;
+    border-color: #bee5eb !important;
+}
+
+/* 预售状态 */
+tr[data-status="pre_order"] .field-status,
+.status-pre_order {
+    background: #e2e3e5 !important;
+    color: #383d41 !important;
+    border-color: #d6d8db !important;
+}
+
+/* 批量操作提示 */
+.actions .help {
+    font-size: 12px;
+    color: #6c757d;
+    margin-left: 10px;
+}
+
+/* 选中行高亮 */
+.changelist-table tbody tr.selected {
+    background-color: #fff3cd !important;
+}
+
+.changelist-table tbody tr.selected td {
+    border-color: #ffeaa7 !important;
+}
+
+/* 操作按钮组 */
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.actions .button {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    border: none;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.actions .button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,123,255,0.3);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .actions select,
+    .actions .button {
+        width: 100%;
+        margin-bottom: 5px;
+    }
+}
+
+/* 批量操作成功提示 */
+.messagelist .success {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 12px 20px;
+    margin: 10px 0;
+    box-shadow: 0 2px 10px rgba(40,167,69,0.3);
+}
+
+.messagelist .warning {
+    background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
+    color: #212529;
+    border: none;
+    border-radius: 6px;
+    padding: 12px 20px;
+    margin: 10px 0;
+    box-shadow: 0 2px 10px rgba(255,193,7,0.3);
+}
+
+/* 加载状态 */
+.actions.loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.actions.loading::after {
+    content: "处理中...";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0,0,0,0.8);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 3px;
+    font-size: 12px;
+}
