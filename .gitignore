@@ -155,3 +155,5 @@ dev-debug.log
 # 配置文件备份
 *.conf.bak
 *.ini.bak
+
+*.mcp.json
