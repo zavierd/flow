@@ -156,4 +156,5 @@ dev-debug.log
 *.conf.bak
 *.ini.bak
 
+# 忽略所有 mcp.json 文件
 *.mcp.json
