@@ -1,0 +1,61 @@
+/* SKU属性值内联编辑样式 */
+
+/* 表单字段样式 */
+.sku-attribute-value-inline .tabular select,
+.sku-attribute-value-inline .tabular input {
+    width: 100%;
+    padding: 6px 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 13px;
+    background: white;
+}
+
+.sku-attribute-value-inline .tabular select:focus,
+.sku-attribute-value-inline .tabular input:focus {
+    border-color: #007cba;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0, 124, 186, 0.2);
+}
+
+/* 表格样式 */
+.sku-attribute-value-inline .tabular tbody tr {
+    border-bottom: 1px solid #e9ecef;
+}
+
+.sku-attribute-value-inline .tabular tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+/* 删除按钮样式 */
+.sku-attribute-value-inline .delete {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.sku-attribute-value-inline .delete input[type="checkbox"] {
+    margin: 0;
+}
+
+/* 错误样式 */
+.sku-attribute-value-inline .errorlist {
+    color: #dc3545;
+    font-size: 12px;
+    margin: 5px 0;
+    padding: 0;
+    list-style: none;
+}
+
+.sku-attribute-value-inline .errorlist li {
+    margin: 0;
+    padding: 2px 0;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .sku-attribute-value-inline .tabular select,
+    .sku-attribute-value-inline .tabular input {
+        font-size: 14px;
+        padding: 8px;
+    }
+} 

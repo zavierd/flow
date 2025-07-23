@@ -1,0 +1,78 @@
+# Task ID: 3
+# Title: 定义数据模型并创建迁移
+# Status: pending
+# Dependencies: 2
+# Priority: high
+# Description: 定义 Category, Brand, Attribute, AttributeValue, SPU, SKU 数据模型，并创建数据库迁移文件。
+# Details:
+1. 在 models.py 文件中定义 Category, Brand, Attribute, AttributeValue, SPU, SKU 模型。
+2. Category 模型支持无限级分类，包含排序功能和层级展示。
+3. Brand 模型包含品牌基本信息、Logo 管理和联系人信息。
+4. Attribute 和 AttributeValue 模型用于属性定义和属性值标准化。
+5. SPU 模型定义SPU产品单元，关联可配置属性和分类归属。
+6. SKU 模型基于 SPU 创建具体产品，关联品牌、价格和营销信息，以及属性配置详情。
+7. 运行 python manage.py makemigrations 命令创建迁移文件。
+8. 运行 python manage.py migrate 命令应用迁移。
+
+# Test Strategy:
+1. 检查数据库中是否成功创建了 Category, Brand, Attribute, AttributeValue, SPU, SKU 表。
+2. 验证模型字段类型和约束是否符合预期。
+3. 插入测试数据，验证模型之间的关系是否正确。
+
+# Subtasks:
+## 1. 定义 Category 模型 [pending]
+### Dependencies: None
+### Description: 在 models.py 文件中定义 Category 模型，支持无限级分类，包含排序功能和层级展示。考虑使用 Django 模板标签或第三方库（如 mptt）实现树状结构展示。
+### Details:
+1. 创建 Category 模型类，包含 name, parent, order 等字段。
+2. 实现无限级分类的逻辑，可以使用外键关联自身。
+3. 添加排序字段，用于控制分类的显示顺序。
+4. 考虑使用 mptt 库简化树状结构的管理。
+5. 定义模型的 __str__ 方法，方便在 Admin 后台显示。
+
+## 2. 定义 Brand 模型 [pending]
+### Dependencies: None
+### Description: 在 models.py 文件中定义 Brand 模型，包含品牌基本信息、Logo 管理和联系人信息。
+### Details:
+1. 创建 Brand 模型类，包含 name, logo, description, contact_person, contact_phone 等字段。
+2. 使用 ImageField 存储 Logo 图片。
+3. 定义模型的 __str__ 方法，方便在 Admin 后台显示。
+
+## 3. 定义 Attribute 和 AttributeValue 模型 [pending]
+### Dependencies: None
+### Description: 在 models.py 文件中定义 Attribute 和 AttributeValue 模型，用于属性定义和属性值标准化。
+### Details:
+1. 创建 Attribute 模型类，包含 name, type 等字段。
+2. 创建 AttributeValue 模型类，包含 attribute (外键关联 Attribute), value 等字段。
+3. 定义模型的 __str__ 方法，方便在 Admin 后台显示。
+
+## 4. 定义 SPU 模型 [pending]
+### Dependencies: None
+### Description: 在 models.py 文件中定义 SPU 模型，定义SPU产品单元，关联可配置属性和分类归属。
+### Details:
+1. 创建 SPU 模型类，包含 name, category (外键关联 Category), attributes (多对多关联 Attribute) 等字段。
+2. 定义模型的 __str__ 方法，方便在 Admin 后台显示。
+
+## 5. 定义 SKU 模型 [pending]
+### Dependencies: None
+### Description: 在 models.py 文件中定义 SKU 模型，基于 SPU 创建具体产品，关联品牌、价格和营销信息，以及属性配置详情。
+### Details:
+1. 创建 SKU 模型类，包含 spu (外键关联 SPU), brand (外键关联 Brand), price, stock, attributes (JSONField 存储属性配置详情) 等字段。
+2. 定义模型的 __str__ 方法，方便在 Admin 后台显示。
+
+## 6. 创建数据库迁移文件 [pending]
+### Dependencies: 3.1, 3.2, 3.3, 3.4, 3.5
+### Description: 运行 python manage.py makemigrations 命令创建数据库迁移文件。
+### Details:
+1. 确保 models.py 文件中的模型定义正确。
+2. 运行 python manage.py makemigrations 命令。
+3. 检查生成的迁移文件是否包含所有模型的变更。
+
+## 7. 应用数据库迁移 [pending]
+### Dependencies: 3.6
+### Description: 运行 python manage.py migrate 命令应用数据库迁移。
+### Details:
+1. 确保数据库连接配置正确。
+2. 运行 python manage.py migrate 命令。
+3. 检查数据库中是否成功创建了 Category, Brand, Attribute, AttributeValue, SPU, SKU 表。
+

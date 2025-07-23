@@ -1,0 +1,375 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls static admin_modify %}
+
+{% block title %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+<a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+&rsaquo; {{ title }}
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="clear-data-tool">
+    <h1>🗑️ 产品数据清理工具</h1>
+    <p class="help">专业的数据库清理和管理工具，请谨慎操作。</p>
+    
+    <!-- 数据摘要部分 -->
+    <div class="module">
+        <h2>📊 数据库状态概览</h2>
+        <div class="form-row">
+            <button type="button" class="default" onclick="loadDataSummary()">刷新数据统计</button>
+        </div>
+        
+        <div id="summaryLoading" class="loading" style="display: none;">
+            <p>正在加载数据统计...</p>
+        </div>
+        
+        <div id="summaryContent" style="display: none;">
+            <div class="stats-grid" id="statsGrid">
+                <!-- 统计卡片将在这里动态生成 -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- 清理操作部分 -->
+    <div class="module">
+        <h2>🧹 清理操作</h2>
+        
+        <div class="form-row">
+            <button type="button" class="default" onclick="dryRun()">🔍 预览删除操作</button>
+            <button type="button" class="deletelink" onclick="confirmClear()" id="clearBtn">🗑️ 执行清理</button>
+        </div>
+        
+        <div id="operationLoading" class="loading" style="display: none;">
+            <p id="operationMessage">正在处理...</p>
+        </div>
+        
+        <div id="operationResult"></div>
+    </div>
+</div>
+
+<style>
+.clear-data-tool {
+    max-width: 1000px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.stat-card {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 4px;
+    text-align: center;
+    border-left: 4px solid #417690;
+}
+
+.stat-number {
+    font-size: 2em;
+    font-weight: bold;
+    color: #417690;
+}
+
+.stat-label {
+    color: #666;
+    margin-top: 5px;
+}
+
+.loading {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+}
+
+.alert {
+    padding: 15px;
+    margin: 15px 0;
+    border-radius: 4px;
+}
+
+.alert-success {
+    background: #d4edda;
+    border: 1px solid #c3e6cb;
+    color: #155724;
+}
+
+.alert-danger {
+    background: #f8d7da;
+    border: 1px solid #f5c6cb;
+    color: #721c24;
+}
+
+.alert-warning {
+    background: #fff3cd;
+    border: 1px solid #ffeaa7;
+    color: #856404;
+}
+
+.delete-list {
+    background: #fff5f5;
+    border: 1px solid #fed7d7;
+    border-radius: 4px;
+    padding: 15px;
+    margin: 15px 0;
+}
+
+.delete-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #fed7d7;
+}
+
+.delete-item:last-child {
+    border-bottom: none;
+}
+
+.form-row button {
+    margin-right: 10px;
+}
+</style>
+
+<script>
+// 获取CSRF Token
+function getCsrfToken() {
+    return document.querySelector('[name=csrfmiddlewaretoken]')?.value || 
+           document.querySelector('meta[name=csrf-token]')?.getAttribute('content') || 
+           '{{ csrf_token }}';
+}
+
+// 加载数据摘要
+async function loadDataSummary() {
+    const loading = document.getElementById('summaryLoading');
+    const content = document.getElementById('summaryContent');
+    
+    loading.style.display = 'block';
+    content.style.display = 'none';
+    
+    try {
+        const response = await fetch('/products/admin/data-summary/');
+        const result = await response.json();
+        
+        if (result.success) {
+            displayDataSummary(result.data);
+            content.style.display = 'block';
+        } else {
+            showAlert('获取数据摘要失败: ' + result.error, 'danger');
+        }
+    } catch (error) {
+        showAlert('网络错误: ' + error.message, 'danger');
+    } finally {
+        loading.style.display = 'none';
+    }
+}
+
+// 显示数据摘要
+function displayDataSummary(data) {
+    const grid = document.getElementById('statsGrid');
+    grid.innerHTML = '';
+    
+    // 总记录数
+    const totalCard = createStatCard(data.total_records.toLocaleString(), '总记录数', '#417690');
+    grid.appendChild(totalCard);
+    
+    // 各类别统计
+    for (const [categoryName, categoryData] of Object.entries(data.categories)) {
+        const card = createStatCard(
+            categoryData.count.toLocaleString(), 
+            categoryName.replace('_', ' ').toUpperCase(),
+            '#28a745'
+        );
+        grid.appendChild(card);
+    }
+}
+
+// 创建统计卡片
+function createStatCard(number, label, color) {
+    const card = document.createElement('div');
+    card.className = 'stat-card';
+    card.innerHTML = `
+        <div class="stat-number" style="color: ${color}">${number}</div>
+        <div class="stat-label">${label}</div>
+    `;
+    return card;
+}
+
+// 干运行
+async function dryRun() {
+    const loading = document.getElementById('operationLoading');
+    const result = document.getElementById('operationResult');
+    const message = document.getElementById('operationMessage');
+    
+    loading.style.display = 'block';
+    result.innerHTML = '';
+    message.textContent = '正在分析将要删除的数据...';
+    
+    try {
+        const formData = new FormData();
+        formData.append('action', 'dry_run');
+        formData.append('csrfmiddlewaretoken', getCsrfToken());
+        
+        const response = await fetch('/products/admin/clear-data/', {
+            method: 'POST',
+            body: formData
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            displayDryRunResult(data.data);
+        } else {
+            showAlert('预览失败: ' + data.error, 'danger');
+        }
+    } catch (error) {
+        showAlert('网络错误: ' + error.message, 'danger');
+    } finally {
+        loading.style.display = 'none';
+    }
+}
+
+// 显示干运行结果
+function displayDryRunResult(data) {
+    const result = document.getElementById('operationResult');
+    
+    let html = `
+        <div class="alert alert-warning">
+            <h4>⚠️ 预览删除操作</h4>
+            <p>以下数据将被永久删除，总计 <strong>${data.total_records.toLocaleString()}</strong> 条记录：</p>
+        </div>
+        <div class="delete-list">
+    `;
+    
+    for (const item of data.will_delete) {
+        if (item.count > 0) {
+            html += `
+                <div class="delete-item">
+                    <span>${item.name}</span>
+                    <strong>${item.count.toLocaleString()} 条</strong>
+                </div>
+            `;
+        }
+    }
+    
+    html += '</div>';
+    
+    if (data.total_records > 0) {
+        html += `
+            <div class="alert alert-danger">
+                <strong>⚠️ 警告：</strong>此操作不可逆转！请确认您真的要删除所有产品数据。
+            </div>
+        `;
+    } else {
+        html += `
+            <div class="alert alert-success">
+                ✅ 数据库已经是空的，无需清理。
+            </div>
+        `;
+        document.getElementById('clearBtn').disabled = true;
+    }
+    
+    result.innerHTML = html;
+}
+
+// 确认清理
+async function confirmClear() {
+    if (!confirm('⚠️ 警告：此操作将永久删除所有产品数据，且不可恢复！\n\n确定要继续吗？')) {
+        return;
+    }
+    
+    if (!confirm('🚨 最后确认：您真的要删除所有产品、属性、品牌、分类等数据吗？\n\n这个操作无法撤销！')) {
+        return;
+    }
+    
+    const loading = document.getElementById('operationLoading');
+    const result = document.getElementById('operationResult');
+    const message = document.getElementById('operationMessage');
+    
+    loading.style.display = 'block';
+    result.innerHTML = '';
+    message.textContent = '正在执行清理操作，请稍候...';
+    
+    try {
+        const formData = new FormData();
+        formData.append('action', 'confirm');
+        formData.append('csrfmiddlewaretoken', getCsrfToken());
+        
+        const response = await fetch('/products/admin/clear-data/', {
+            method: 'POST',
+            body: formData
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            displayClearResult(data.data);
+            // 刷新数据摘要
+            setTimeout(() => loadDataSummary(), 1000);
+        } else {
+            showAlert('清理失败: ' + data.error, 'danger');
+        }
+    } catch (error) {
+        showAlert('网络错误: ' + error.message, 'danger');
+    } finally {
+        loading.style.display = 'none';
+    }
+}
+
+// 显示清理结果
+function displayClearResult(data) {
+    const result = document.getElementById('operationResult');
+    
+    let html = `
+        <div class="alert alert-success">
+            <h4>✅ 清理完成！</h4>
+            <p>${data.message}</p>
+        </div>
+        <div class="delete-list">
+            <h5>删除统计：</h5>
+    `;
+    
+    for (const [name, count] of Object.entries(data.deletion_stats)) {
+        if (count > 0) {
+            html += `
+                <div class="delete-item">
+                    <span>${name}</span>
+                    <strong>${count.toLocaleString()} 条</strong>
+                </div>
+            `;
+        }
+    }
+    
+    html += '</div>';
+    
+    if (data.errors && data.errors.length > 0) {
+        html += `
+            <div class="alert alert-warning">
+                <h5>⚠️ 警告信息：</h5>
+                <ul>
+        `;
+        for (const error of data.errors) {
+            html += `<li>${error}</li>`;
+        }
+        html += '</ul></div>';
+    }
+    
+    result.innerHTML = html;
+}
+
+// 显示提示信息
+function showAlert(message, type) {
+    const result = document.getElementById('operationResult');
+    result.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+}
+
+// 页面加载时自动获取数据摘要
+document.addEventListener('DOMContentLoaded', function() {
+    loadDataSummary();
+});
+</script>
+{% endblock %}

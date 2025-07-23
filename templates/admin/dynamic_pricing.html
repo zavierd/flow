@@ -1,0 +1,826 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}动态价格计算 | {{ site_title|default:"Django site admin" }}{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+<style>
+.pricing-calculator {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.calculator-header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #e9ecef;
+}
+
+.calculator-header h1 {
+    color: #2c3e50;
+    margin-bottom: 10px;
+    font-size: 2.2em;
+}
+
+.calculator-header p {
+    color: #6c757d;
+    font-size: 1.1em;
+}
+
+.form-section {
+    margin-bottom: 30px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border-left: 4px solid #007cba;
+}
+
+.form-section h3 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+    font-size: 1.3em;
+}
+
+.form-row {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+.form-group {
+    flex: 1;
+    min-width: 200px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: #495057;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: border-color 0.3s;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #007cba;
+    box-shadow: 0 0 0 2px rgba(0,123,186,0.25);
+}
+
+.btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+}
+
+.btn-primary {
+    background: #007cba;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #0056b3;
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #545b62;
+}
+
+.result-section {
+    margin-top: 30px;
+    padding: 20px;
+    background: #e8f5e8;
+    border-radius: 8px;
+    border-left: 4px solid #28a745;
+    display: none;
+}
+
+.result-section.error {
+    background: #f8d7da;
+    border-left-color: #dc3545;
+}
+
+.price-display {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.base-price {
+    font-size: 1.2em;
+    color: #6c757d;
+    margin-bottom: 10px;
+}
+
+.total-price {
+    font-size: 2.5em;
+    font-weight: bold;
+    color: #28a745;
+    margin-bottom: 10px;
+}
+
+.price-increment {
+    font-size: 1.1em;
+    color: #dc3545;
+}
+
+.details-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.details-table th,
+.details-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.details-table th {
+    background: #f8f9fa;
+    font-weight: 600;
+    color: #495057;
+}
+
+.details-table tr:hover {
+    background: #f8f9fa;
+}
+
+.loading {
+    text-align: center;
+    padding: 20px;
+    color: #6c757d;
+}
+
+.loading .spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #007cba;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-right: 10px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+
+.alert-info {
+    color: #0c5460;
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+}
+
+.alert-warning {
+    color: #856404;
+    background-color: #fff3cd;
+    border-color: #ffeaa7;
+}
+
+.alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+.product-info {
+    background: #e3f2fd;
+    padding: 15px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    border-left: 4px solid #2196f3;
+}
+
+.product-info h4 {
+    color: #1976d2;
+    margin-bottom: 10px;
+}
+
+.product-info p {
+    margin-bottom: 5px;
+    color: #424242;
+}
+
+.search-container {
+    position: relative;
+}
+
+.search-results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: white;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    display: none;
+}
+
+.search-results.show {
+    display: block;
+}
+
+.search-results div {
+    padding: 10px 15px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+    transition: background-color 0.2s;
+}
+
+.search-results div:last-child {
+    border-bottom: none;
+}
+
+.search-results div:hover {
+    background-color: #f0f0f0;
+}
+
+.search-results .no-results {
+    padding: 10px 15px;
+    color: #6c757d;
+    text-align: center;
+    cursor: default;
+}
+
+.search-results .loading {
+    padding: 10px 15px;
+    color: #6c757d;
+    text-align: center;
+    cursor: default;
+}
+
+.search-result-option {
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+@media (max-width: 768px) {
+    .form-row {
+        flex-direction: column;
+    }
+    
+    .form-group {
+        min-width: 100%;
+    }
+    
+    .total-price {
+        font-size: 2em;
+    }
+}
+
+.btn-link {
+    color: #007cba;
+    text-decoration: none;
+    padding: 5px 10px;
+    border: 1px solid #007cba;
+    border-radius: 4px;
+    font-size: 12px;
+    transition: all 0.3s;
+}
+
+.btn-link:hover {
+    background-color: #007cba;
+    color: white;
+    text-decoration: none;
+}
+
+#calculation-summary a {
+    color: #007cba;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+#calculation-summary a:hover {
+    text-decoration: underline;
+}
+
+/* 规则范围样式 */
+.rule-scope {
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.rule-scope.sku-specific {
+    background-color: #ffe6e6;
+    color: #e74c3c;
+    border: 1px solid #e74c3c;
+}
+
+.rule-scope.spu-general {
+    background-color: #e6f3ff;
+    color: #3498db;
+    border: 1px solid #3498db;
+}
+
+/* 优先级徽章样式 */
+.priority-badge {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 8px;
+    font-size: 10px;
+    font-weight: bold;
+    text-align: center;
+    min-width: 20px;
+}
+
+.priority-badge.priority-10 {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.priority-badge.priority-5 {
+    background-color: #3498db;
+    color: white;
+}
+
+/* 规则统计信息样式 */
+#priority-info {
+    margin-top: 10px;
+    padding: 8px 12px;
+    background-color: #f8f9fa;
+    border-left: 4px solid #17a2b8;
+    font-size: 13px;
+}
+
+#priority-text {
+    color: #495057;
+    font-family: monospace;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="pricing-calculator">
+    <div class="calculator-header">
+        <h1>🧮 动态价格计算器</h1>
+        <p>输入产品信息和自定义尺寸，系统将根据加价规则自动计算最终价格</p>
+    </div>
+
+    <form id="pricing-form">
+        {% csrf_token %}
+        
+        <!-- 产品选择 -->
+        <div class="form-section">
+            <h3>📦 产品选择</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="sku-search">搜索产品 (输入产品名称、编码或品牌):</label>
+                    <div class="search-container">
+                        <input type="text" id="sku-search" name="sku_search" placeholder="输入关键词搜索产品..." autocomplete="off">
+                        <input type="hidden" id="selected-sku-id" name="sku_id">
+                        <div id="search-results" class="search-results"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="product-info" class="product-info" style="display: none;">
+                <h4>产品信息</h4>
+                <p><strong>产品名称:</strong> <span id="product-name"></span></p>
+                <p><strong>产品编码:</strong> <span id="product-code"></span></p>
+                <p><strong>基础价格:</strong> ¥<span id="base-price"></span></p>
+                <p><strong>品牌:</strong> <span id="product-brand"></span></p>
+                <p><strong>SPU:</strong> <span id="product-spu"></span></p>
+            </div>
+        </div>
+
+        <!-- 尺寸输入 -->
+        <div class="form-section">
+            <h3>📏 自定义尺寸</h3>
+            <div class="alert alert-info">
+                <strong>提示:</strong> 请输入产品的实际尺寸，系统将根据标准尺寸计算超标加价。留空将使用标准尺寸。
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="height">高度 (mm):</label>
+                    <input type="number" id="height" name="height" min="0" step="1" placeholder="如: 2400">
+                </div>
+                <div class="form-group">
+                    <label for="width">宽度 (mm):</label>
+                    <input type="number" id="width" name="width" min="0" step="1" placeholder="如: 900">
+                </div>
+                <div class="form-group">
+                    <label for="depth">厚度/深度 (mm):</label>
+                    <input type="number" id="depth" name="depth" min="0" step="1" placeholder="如: 300">
+                </div>
+            </div>
+        </div>
+
+        <!-- 操作按钮 -->
+        <div class="form-section">
+            <div class="form-row">
+                <button type="submit" class="btn btn-primary">🧮 计算价格</button>
+                <button type="button" id="reset-btn" class="btn btn-secondary">🔄 重置</button>
+            </div>
+        </div>
+    </form>
+
+    <!-- 计算结果 -->
+    <div id="result-section" class="result-section">
+        <div class="loading" id="loading" style="display: none;">
+            <div class="spinner"></div>
+            正在计算价格...
+        </div>
+        
+        <div id="price-result" style="display: none;">
+            <div class="price-display">
+                <div class="base-price">基础价格: ¥<span id="result-base-price"></span></div>
+                <div class="total-price">¥<span id="result-total-price"></span></div>
+                <div class="price-increment">加价: +¥<span id="result-increment"></span></div>
+            </div>
+            
+            <div id="pricing-details">
+                <h4>💰 价格计算详情</h4>
+                <table class="details-table">
+                    <thead>
+                        <tr>
+                            <th>规则名称</th>
+                            <th>规则类型</th>
+                            <th>规则范围</th>
+                            <th>优先级</th>
+                            <th>阈值</th>
+                            <th>实际值</th>
+                            <th>超出值</th>
+                            <th>计算方法</th>
+                            <th>加价金额</th>
+                        </tr>
+                    </thead>
+                    <tbody id="details-tbody">
+                    </tbody>
+                </table>
+            </div>
+            
+            <div id="calculation-summary">
+                <h4>📊 计算汇总</h4>
+                <p><strong>应用规则数:</strong> <span id="applied-rules"></span> 
+                   <a href="#" id="view-rules-link" style="margin-left: 10px; display: none;">查看规则</a></p>
+                <p><strong>总加价:</strong> ¥<span id="total-increment"></span></p>
+                <p><strong>计算时间:</strong> <span id="calculation-time"></span></p>
+                <p><strong>规则管理:</strong> 
+                   <a href="/admin/products/productspricingrule/" target="_blank" class="btn btn-link">📝 管理所有加价规则</a>
+                   <a href="#" id="add-rule-link" style="margin-left: 10px; display: none;">➕ 为此产品添加规则</a>
+                </p>
+            </div>
+        </div>
+        
+        <div id="error-message" style="display: none;">
+            <div class="alert alert-danger">
+                <strong>计算错误:</strong> <span id="error-text"></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('pricing-form');
+    const skuSearchInput = document.getElementById('sku-search');
+    const searchResultsDiv = document.getElementById('search-results');
+    const selectedSkuIdInput = document.getElementById('selected-sku-id');
+    const resultSection = document.getElementById('result-section');
+    const loading = document.getElementById('loading');
+    const priceResult = document.getElementById('price-result');
+    const errorMessage = document.getElementById('error-message');
+    const productInfo = document.getElementById('product-info');
+    const resetBtn = document.getElementById('reset-btn');
+
+    // 搜索产品
+    skuSearchInput.addEventListener('input', function() {
+        const searchTerm = this.value.trim();
+        if (searchTerm.length >= 2) { // Only search after 2 characters
+            searchProducts(searchTerm);
+        } else {
+            searchResultsDiv.innerHTML = ''; // Clear results if search term is too short
+            searchResultsDiv.classList.remove('show');
+        }
+    });
+
+    // 点击页面其他地方时隐藏搜索结果
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.search-container')) {
+            searchResultsDiv.classList.remove('show');
+        }
+    });
+
+    // 选择搜索结果
+    searchResultsDiv.addEventListener('click', function(e) {
+        const selectedOption = e.target.closest('div');
+        if (selectedOption && selectedOption.dataset.skuId) {
+            const skuId = selectedOption.dataset.skuId;
+            selectedSkuIdInput.value = skuId;
+            skuSearchInput.value = selectedOption.dataset.skuName; // Display name in input
+            
+            // 立即显示基本产品信息
+            document.getElementById('product-name').textContent = selectedOption.dataset.skuName;
+            document.getElementById('product-code').textContent = selectedOption.dataset.skuCode || '暂无编码';
+            document.getElementById('base-price').textContent = parseFloat(selectedOption.dataset.price).toFixed(2);
+            document.getElementById('product-brand').textContent = selectedOption.dataset.brand || '未知';
+            document.getElementById('product-spu').textContent = selectedOption.dataset.spu || '未知';
+            
+            productInfo.style.display = 'block';
+            
+            // 获取更多产品信息（如尺寸信息）
+            fetchProductInfo(skuId);
+            
+            searchResultsDiv.innerHTML = ''; // Clear results after selection
+            searchResultsDiv.classList.remove('show'); // Hide results after selection
+        }
+    });
+
+    // 获取产品详细信息
+    function fetchProductInfo(skuId) {
+        fetch(`/products/api/sku/${skuId}/dimensions/`, {
+            method: 'GET',
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.sku_name) {
+                document.getElementById('product-name').textContent = data.sku_name;
+                document.getElementById('product-code').textContent = data.sku_code || '暂无编码';
+                document.getElementById('base-price').textContent = data.price.toFixed(2);
+                document.getElementById('product-brand').textContent = data.brand || '未知';
+                document.getElementById('product-spu').textContent = data.spu_name || '未知';
+                
+                // 如果有标准尺寸，显示为占位符
+                if (data.dimensions && data.dimensions.length > 0) {
+                    data.dimensions.forEach(dim => {
+                        const input = document.getElementById(dim.dimension_type);
+                        if (input) {
+                            input.placeholder = `标准: ${dim.standard_value}${dim.unit}`;
+                        }
+                    });
+                }
+            }
+        })
+        .catch(error => {
+            console.error('获取产品信息失败:', error);
+        });
+    }
+
+    // 搜索产品函数
+    function searchProducts(searchTerm) {
+        searchResultsDiv.innerHTML = '<div class="loading">搜索中...</div>';
+        searchResultsDiv.classList.add('show');
+        
+        fetch(`/api/sku-search/?q=${encodeURIComponent(searchTerm)}`, {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            searchResultsDiv.innerHTML = ''; // Clear previous results
+            if (data.skus && data.skus.length > 0) {
+                data.skus.forEach(sku => {
+                    const option = document.createElement('div');
+                    option.textContent = sku.display_text;
+                    option.dataset.skuId = sku.id;
+                    option.dataset.skuName = sku.name;
+                    option.dataset.skuCode = sku.sku_code; // 注意这里使用sku_code字段
+                    option.dataset.price = sku.price;
+                    option.dataset.brand = sku.brand;
+                    option.dataset.spu = sku.spu;
+                    option.classList.add('search-result-option');
+                    searchResultsDiv.appendChild(option);
+                });
+                searchResultsDiv.classList.add('show');
+            } else {
+                searchResultsDiv.innerHTML = '<div class="no-results">未找到相关产品</div>';
+                searchResultsDiv.classList.add('show');
+            }
+        })
+        .catch(error => {
+            searchResultsDiv.innerHTML = '<div class="no-results">搜索失败，请稍后再试</div>';
+            searchResultsDiv.classList.add('show');
+            console.error('搜索产品失败:', error);
+        });
+    }
+
+    // 表单提交处理
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const skuId = selectedSkuIdInput.value;
+        if (!skuId) {
+            alert('请先选择产品');
+            return;
+        }
+
+        const dimensions = {
+            height: document.getElementById('height').value,
+            width: document.getElementById('width').value,
+            depth: document.getElementById('depth').value
+        };
+
+        // 移除空值
+        Object.keys(dimensions).forEach(key => {
+            if (!dimensions[key]) {
+                delete dimensions[key];
+            }
+        });
+
+        calculatePrice(skuId, dimensions);
+    });
+
+    // 价格计算函数
+    function calculatePrice(skuId, dimensions) {
+        showLoading();
+        
+        fetch('/products/api/pricing/calculate/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+            },
+            body: JSON.stringify({
+                sku_id: skuId,
+                dimensions: dimensions
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            hideLoading();
+            if (data.error) {
+                showError(data.error);
+            } else {
+                showResult(data);
+            }
+        })
+        .catch(error => {
+            hideLoading();
+            showError('网络错误，请稍后重试');
+            console.error('计算价格失败:', error);
+        });
+    }
+
+    // 显示加载状态
+    function showLoading() {
+        resultSection.style.display = 'block';
+        resultSection.className = 'result-section';
+        loading.style.display = 'block';
+        priceResult.style.display = 'none';
+        errorMessage.style.display = 'none';
+    }
+
+    // 隐藏加载状态
+    function hideLoading() {
+        loading.style.display = 'none';
+    }
+
+    // 显示计算结果
+    function showResult(data) {
+        document.getElementById('result-base-price').textContent = data.base_price.toFixed(2);
+        document.getElementById('result-total-price').textContent = data.total_price.toFixed(2);
+        document.getElementById('result-increment').textContent = data.calculation_summary.total_increment.toFixed(2);
+        
+        // 显示详细信息
+        const tbody = document.getElementById('details-tbody');
+        tbody.innerHTML = '';
+        
+        if (data.pricing_details && data.pricing_details.length > 0) {
+            data.pricing_details.forEach(detail => {
+                const row = tbody.insertRow();
+                row.innerHTML = `
+                    <td>${detail.rule_name}</td>
+                    <td>${detail.rule_type}</td>
+                    <td><span class="rule-scope ${detail.rule_scope === 'SKU专属' ? 'sku-specific' : 'spu-general'}">${detail.rule_scope}</span></td>
+                    <td><span class="priority-badge priority-${detail.priority}">${detail.priority}</span></td>
+                    <td>${detail.threshold_value}${detail.unit}</td>
+                    <td>${detail.custom_value}${detail.unit}</td>
+                    <td>${detail.excess_value}${detail.unit}</td>
+                    <td>${detail.calculation_method}</td>
+                    <td>¥${detail.calculated_increment.toFixed(2)}</td>
+                `;
+            });
+        } else {
+            const row = tbody.insertRow();
+            row.innerHTML = '<td colspan="9" style="text-align: center; color: #6c757d;">无适用的加价规则</td>';
+        }
+        
+        // 显示计算汇总
+        document.getElementById('applied-rules').textContent = data.calculation_summary.applied_rules_count;
+        document.getElementById('total-increment').textContent = data.calculation_summary.total_increment.toFixed(2);
+        document.getElementById('calculation-time').textContent = new Date(data.calculation_summary.calculation_time).toLocaleString();
+        
+        // 显示规则优先级信息
+        if (data.calculation_summary.rule_priority_info) {
+            const priorityInfo = data.calculation_summary.rule_priority_info;
+            const priorityText = `SKU专属: ${priorityInfo.sku_specific_rules}, SPU通用: ${priorityInfo.spu_general_rules}, 总计: ${priorityInfo.total_available_rules}`;
+            
+            let priorityElement = document.getElementById('priority-info');
+            if (!priorityElement) {
+                priorityElement = document.createElement('p');
+                priorityElement.id = 'priority-info';
+                priorityElement.innerHTML = '<strong>规则统计:</strong> <span id="priority-text"></span>';
+                document.getElementById('calculation-summary').appendChild(priorityElement);
+            }
+            document.getElementById('priority-text').textContent = priorityText;
+        }
+        
+        // 获取当前SKU的SPU ID，用于链接
+        const currentSkuId = selectedSkuIdInput.value;
+        
+        // 设置规则查看链接
+        const viewRulesLink = document.getElementById('view-rules-link');
+        const addRuleLink = document.getElementById('add-rule-link');
+        
+        if (data.calculation_summary.applied_rules_count > 0) {
+            viewRulesLink.style.display = 'inline';
+            viewRulesLink.onclick = function(e) {
+                e.preventDefault();
+                // 获取SPU信息用于查看规则
+                fetchSPURules(currentSkuId);
+            };
+        } else {
+            viewRulesLink.style.display = 'none';
+        }
+        
+        // 设置添加规则链接
+        addRuleLink.style.display = 'inline';
+        addRuleLink.onclick = function(e) {
+            e.preventDefault();
+            // 获取SPU信息用于添加规则
+            fetchSPUForAddRule(currentSkuId);
+        };
+        
+        priceResult.style.display = 'block';
+    }
+
+    // 显示错误信息
+    function showError(message) {
+        resultSection.className = 'result-section error';
+        resultSection.style.display = 'block';
+        document.getElementById('error-text').textContent = message;
+        errorMessage.style.display = 'block';
+        priceResult.style.display = 'none';
+    }
+
+    // 重置表单
+    resetBtn.addEventListener('click', function() {
+        form.reset();
+        resultSection.style.display = 'none';
+        productInfo.style.display = 'none';
+        skuSearchInput.value = '';
+        selectedSkuIdInput.value = '';
+        searchResultsDiv.innerHTML = '';
+        searchResultsDiv.classList.remove('show'); // Ensure it's hidden
+        
+        // 清空占位符
+        ['height', 'width', 'depth'].forEach(id => {
+            document.getElementById(id).placeholder = '';
+        });
+    });
+});
+</script>
+{% endblock %} 

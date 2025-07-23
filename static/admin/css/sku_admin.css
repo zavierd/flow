@@ -1,0 +1,78 @@
+/* SKU Admin 样式 - 只保留SKU特有样式 */
+
+/* 列表页样式优化 */
+.sku-admin .changelist-results {
+    font-size: 13px;
+}
+
+/* 产品编码链接样式 */
+.product-code-link {
+    color: #007cba !important;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.product-code-link:hover {
+    color: #005a87 !important;
+    text-decoration: underline;
+}
+
+/* 价格显示样式 */
+.price-display {
+    font-weight: 600;
+    color: #28a745;
+}
+
+/* 属性显示样式 */
+.attributes-display {
+    font-size: 11px;
+}
+
+.attribute-tag {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 3px;
+    margin-right: 4px;
+    font-size: 10px;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+/* 库存状态样式 */
+.stock-high {
+    color: #28a745;
+    font-weight: 600;
+}
+
+.stock-low {
+    color: #dc3545;
+    font-weight: 600;
+}
+
+/* 状态标签样式 */
+.status-active {
+    color: #28a745;
+    font-weight: 500;
+}
+
+.status-inactive {
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.status-draft {
+    color: #ffc107;
+    font-weight: 500;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .sku-admin .changelist-results {
+        font-size: 12px;
+    }
+    
+    .attribute-tag {
+        font-size: 9px;
+        padding: 1px 4px;
+    }
+} 

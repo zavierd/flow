@@ -1,0 +1,190 @@
+{% extends "admin/index.html" %}
+{% load i18n static %}
+
+{% block content %}
+{{ block.super }}
+
+<!-- 添加数据管理工具 -->
+<div class="module" id="data-management-tools">
+    <table>
+        <caption>
+            <a href="#" class="section" title="{% trans 'Show/hide' %}">
+                🛠️ 数据管理工具
+            </a>
+        </caption>
+        <tbody>
+            <tr class="model-importtask">
+                <th scope="row">
+                    <a href="{% url 'products:import_ai_data' %}">📥 数据导入</a>
+                </th>
+                <td>导入产品数据（支持AI格式和传统格式）</td>
+            </tr>
+            <tr class="model-cleartool">
+                <th scope="row">
+                    <a href="/admin/clear-data-tool/">🗑️ 数据清理</a>
+                </th>
+                <td>清空产品数据库（危险操作，请谨慎使用）</td>
+            </tr>
+            <tr class="model-summary">
+                <th scope="row">
+                    <a href="#" onclick="showDataSummary(); return false;">📊 数据统计</a>
+                </th>
+                <td>查看当前数据库状态和统计信息</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- 数据统计弹窗 -->
+<div id="data-summary-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 30px; border-radius: 8px; max-width: 600px; width: 90%;">
+        <h2>📊 数据库统计</h2>
+        <div id="summary-content">
+            <p>正在加载...</p>
+        </div>
+        <div style="text-align: right; margin-top: 20px;">
+            <button type="button" onclick="closeDataSummary()" class="default">关闭</button>
+        </div>
+    </div>
+</div>
+
+<style>
+#data-management-tools {
+    margin-top: 20px;
+}
+
+#data-management-tools caption a {
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+#data-management-tools th a {
+    text-decoration: none;
+    font-weight: normal;
+}
+
+#data-management-tools th a:hover {
+    text-decoration: underline;
+}
+
+#data-management-tools td {
+    color: #666;
+    font-size: 0.9em;
+}
+
+.stats-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 4px;
+    border-left: 4px solid #417690;
+}
+
+.stat-number {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #417690;
+}
+
+.stat-label {
+    color: #666;
+    margin-top: 5px;
+    font-size: 0.9em;
+}
+</style>
+
+<script>
+async function showDataSummary() {
+    const modal = document.getElementById('data-summary-modal');
+    const content = document.getElementById('summary-content');
+    
+    modal.style.display = 'block';
+    content.innerHTML = '<p>正在加载数据统计...</p>';
+    
+    try {
+        const response = await fetch('/products/admin/data-summary/');
+        const result = await response.json();
+        
+        if (result.success) {
+            displaySummaryData(result.data);
+        } else {
+            content.innerHTML = '<p style="color: red;">加载失败: ' + result.error + '</p>';
+        }
+    } catch (error) {
+        content.innerHTML = '<p style="color: red;">网络错误: ' + error.message + '</p>';
+    }
+}
+
+function displaySummaryData(data) {
+    const content = document.getElementById('summary-content');
+    
+    let html = `
+        <div class="stats-summary">
+            <div class="stat-item">
+                <div class="stat-number">${data.total_records.toLocaleString()}</div>
+                <div class="stat-label">总记录数</div>
+            </div>
+    `;
+    
+    for (const [categoryName, categoryData] of Object.entries(data.categories)) {
+        const displayName = {
+            'products': '产品',
+            'attributes': '属性',
+            'metadata': '基础数据',
+            'import_history': '导入历史'
+        }[categoryName] || categoryName;
+        
+        html += `
+            <div class="stat-item">
+                <div class="stat-number">${categoryData.count.toLocaleString()}</div>
+                <div class="stat-label">${displayName}</div>
+            </div>
+        `;
+    }
+    
+    html += '</div>';
+    
+    // 添加详细信息
+    html += '<h3>详细统计</h3><ul>';
+    for (const [categoryName, categoryData] of Object.entries(data.categories)) {
+        if (categoryData.count > 0) {
+            const displayName = {
+                'products': '产品数据',
+                'attributes': '属性数据',
+                'metadata': '基础数据',
+                'import_history': '导入历史'
+            }[categoryName] || categoryName;
+            
+            html += `<li><strong>${displayName}</strong>: ${categoryData.count} 条记录<ul>`;
+            for (const [detailName, detailCount] of Object.entries(categoryData.details)) {
+                if (detailCount > 0) {
+                    html += `<li>${detailName}: ${detailCount}</li>`;
+                }
+            }
+            html += '</ul></li>';
+        }
+    }
+    html += '</ul>';
+    
+    content.innerHTML = html;
+}
+
+function closeDataSummary() {
+    document.getElementById('data-summary-modal').style.display = 'none';
+}
+
+// 点击模态框外部关闭
+document.getElementById('data-summary-modal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeDataSummary();
+    }
+});
+</script>
+{% endblock %}

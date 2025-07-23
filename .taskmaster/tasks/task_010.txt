@@ -1,0 +1,70 @@
+# Task ID: 10
+# Title: 开发 REST API 接口
+# Status: pending
+# Dependencies: 3
+# Priority: high
+# Description: 开发 REST API 接口，包括产品查询接口、产品详情接口、筛选器接口、分类接口和品牌接口。
+# Details:
+1. 使用 Django REST Framework 开发 API 接口。
+2. 定义 Serializers，用于序列化和反序列化数据。
+3. 创建 ViewSets，用于处理 API 请求。
+4. 配置 URL，将 API 接口映射到 URL。
+
+# Test Strategy:
+1. 使用 Postman 或 curl 测试 API 接口。
+2. 验证 API 接口是否能够正常返回数据。
+3. 检查数据的序列化和反序列化是否正确。
+
+# Subtasks:
+## 1. 创建产品查询 API 接口 [pending]
+### Dependencies: None
+### Description: 使用 Django REST Framework 创建产品查询 API 接口，支持分页、排序和过滤功能。根据整木定制产品库管理系统的PRD要求，实现产品列表的检索。
+### Details:
+1. 定义 ProductSerializer，序列化产品数据。
+2. 创建 ProductListViewSet，处理产品查询请求。
+3. 实现分页、排序和过滤功能。
+4. 配置 URL，将 API 接口映射到 /products/ 路径。
+
+## 2. 创建产品详情 API 接口 [pending]
+### Dependencies: None
+### Description: 使用 Django REST Framework 创建产品详情 API 接口，根据产品 ID 返回详细信息。根据整木定制产品库管理系统的PRD要求，展示产品的详细属性和图片。
+### Details:
+1. 定义 ProductDetailSerializer，序列化产品详情数据。
+2. 创建 ProductDetailViewSet，处理产品详情请求。
+3. 配置 URL，将 API 接口映射到 /products/{id}/ 路径。
+
+## 3. 创建筛选器 API 接口 [pending]
+### Dependencies: None
+### Description: 创建筛选器 API 接口，返回可用于产品筛选的属性列表。根据整木定制产品库管理系统的PRD要求，支持动态生成筛选条件。
+### Details:
+1. 定义 FilterSerializer，序列化筛选器数据。
+2. 创建 FilterViewSet，处理筛选器请求。
+3. 从 Attribute 和 AttributeValue 模型中获取筛选条件。
+4. 配置 URL，将 API 接口映射到 /filters/ 路径。
+
+## 4. 创建分类 API 接口 [pending]
+### Dependencies: None
+### Description: 创建分类 API 接口，返回产品分类列表。根据整木定制产品库管理系统的PRD要求，支持无限级分类和层级展示。
+### Details:
+1. 定义 CategorySerializer，序列化分类数据。
+2. 创建 CategoryViewSet，处理分类请求。
+3. 从 Category 模型中获取分类列表。
+4. 配置 URL，将 API 接口映射到 /categories/ 路径。
+
+## 5. 创建品牌 API 接口 [pending]
+### Dependencies: None
+### Description: 创建品牌 API 接口，返回品牌列表。根据整木定制产品库管理系统的PRD要求，展示品牌基本信息和 Logo。
+### Details:
+1. 定义 BrandSerializer，序列化品牌数据。
+2. 创建 BrandViewSet，处理品牌请求。
+3. 从 Brand 模型中获取品牌列表。
+4. 配置 URL，将 API 接口映射到 /brands/ 路径。
+
+## 6. 配置 URL [pending]
+### Dependencies: 10.1, 10.2, 10.3, 10.4, 10.5
+### Description: 配置 URL，将所有 API 接口映射到对应的 URL 路径。确保 URL 的命名规范和可读性。
+### Details:
+1. 在 urls.py 文件中配置 URL 模式。
+2. 使用 Django REST Framework 的 Router 自动生成 URL。
+3. 确保每个 API 接口都有对应的 URL。
+

@@ -1,0 +1,321 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block title %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+<style>
+.dashboard {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.dashboard-card {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border-left: 4px solid #007cba;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.dashboard-card h3 {
+    margin: 0 0 10px 0;
+    color: #333;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.dashboard-card .number {
+    font-size: 32px;
+    font-weight: bold;
+    color: #007cba;
+    margin: 10px 0;
+}
+
+.dashboard-card .description {
+    color: #666;
+    font-size: 12px;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.dashboard-card a {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.warning {
+    border-left-color: #ff6b35;
+}
+
+.warning .number {
+    color: #ff6b35;
+}
+
+.app-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-top: 30px;
+}
+
+.module {
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.module h2 {
+    background: linear-gradient(135deg, #007cba 0%, #005a87 100%);
+    color: white;
+    margin: 0;
+    padding: 15px 20px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.module h2 a {
+    color: white;
+    text-decoration: none;
+}
+
+.module table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.module table tr:hover {
+    background-color: #f8f9fa;
+}
+
+.module table td {
+    padding: 12px 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.module table td a {
+    color: #333;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.module table td a:hover {
+    color: #007cba;
+}
+
+.recent-actions-module {
+    grid-column: span 2;
+    margin-top: 30px;
+}
+
+.quick-actions {
+    display: flex;
+    gap: 15px;
+    margin: 20px 0;
+    flex-wrap: wrap;
+}
+
+.quick-action {
+    background: #007cba;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background 0.3s;
+}
+
+.quick-action:hover {
+    background: #005a87;
+    color: white;
+}
+
+/* 导入功能按钮特殊样式 */
+.quick-action.import-action {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    position: relative;
+    overflow: hidden;
+}
+
+.quick-action.import-action:hover {
+    background: linear-gradient(135deg, #218838, #1ea087);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(40, 167, 69, 0.3);
+}
+
+.quick-action.import-action::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+    transform: rotate(45deg);
+    transition: all 0.6s;
+    opacity: 0;
+}
+
+.quick-action.import-action:hover::before {
+    opacity: 1;
+    transform: rotate(45deg) translate(50%, 50%);
+}
+
+@media (max-width: 768px) {
+    .dashboard {
+        grid-template-columns: 1fr;
+    }
+    
+    .app-list {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<h1>{{ site_header }} - 管理面板</h1>
+
+<!-- 统计面板 -->
+<div class="dashboard">
+    <div class="dashboard-card">
+        <a href="{% url 'custom_admin:products_category_changelist' %}">
+            <h3>📂 产品分类</h3>
+            <div class="number">{{ stats.category_count }}</div>
+            <div class="description">已创建的产品分类数量</div>
+        </a>
+    </div>
+    
+    <div class="dashboard-card">
+        <a href="{% url 'custom_admin:products_brand_changelist' %}">
+            <h3>🏷️ 注册品牌</h3>
+            <div class="number">{{ stats.brand_count }}</div>
+            <div class="description">系统中的品牌总数</div>
+        </a>
+    </div>
+    
+    <div class="dashboard-card">
+        <a href="{% url 'custom_admin:products_spu_changelist' %}">
+            <h3>📦 产品 SPU</h3>
+            <div class="number">{{ stats.spu_count }}</div>
+            <div class="description">SPU产品单元总数</div>
+        </a>
+    </div>
+    
+    <div class="dashboard-card">
+        <a href="{% url 'custom_admin:products_sku_changelist' %}">
+            <h3>🛍️ 产品 SKU</h3>
+            <div class="number">{{ stats.sku_count }}</div>
+            <div class="description">库存单元总数</div>
+        </a>
+    </div>
+    
+    <div class="dashboard-card">
+        <a href="{% url 'custom_admin:products_sku_changelist' %}?status=active">
+            <h3>✅ 在售商品</h3>
+            <div class="number">{{ stats.active_sku_count }}</div>
+            <div class="description">当前可售的 SKU 数量</div>
+        </a>
+    </div>
+    
+    <div class="dashboard-card warning">
+        <a href="{% url 'custom_admin:products_sku_changelist' %}?stock_quantity__lte=10">
+            <h3>⚠️ 低库存商品</h3>
+            <div class="number">{{ stats.low_stock_count }}</div>
+            <div class="description">库存不足 10 件的商品</div>
+        </a>
+    </div>
+</div>
+
+<!-- 快速操作 -->
+<div class="quick-actions">
+    <a href="{% url 'custom_admin:products_category_add' %}" class="quick-action">
+        ➕ 添加分类
+    </a>
+    <a href="{% url 'custom_admin:products_brand_add' %}" class="quick-action">
+        🏷️ 添加品牌
+    </a>
+    <a href="{% url 'custom_admin:products_spu_add' %}" class="quick-action">
+        📦 添加SPU
+    </a>
+    <a href="{% url 'custom_admin:products_sku_add' %}" class="quick-action">
+        🛍️ 添加SKU
+    </a>
+    <a href="{% url 'custom_admin:products_importtask_changelist' %}" class="quick-action import-action">
+        📥 数据导入
+    </a>
+    <a href="/import/" class="quick-action import-action" target="_blank">
+        🚀 导入向导
+    </a>
+</div>
+
+<!-- 应用模块列表 -->
+{% if available_apps %}
+<div class="app-list">
+    {% for app in available_apps %}
+        <div class="module">
+            <h2>
+                <a href="{{ app.app_url }}" class="section">
+                    {{ app.name }}
+                </a>
+            </h2>
+            
+            {% if app.models %}
+            <table>
+                {% for model in app.models %}
+                <tr>
+                    <td>
+                        {% if model.admin_url %}
+                            <a href="{{ model.admin_url }}">{{ model.name }}</a>
+                        {% else %}
+                            {{ model.name }}
+                        {% endif %}
+                        
+                        {% if model.add_url %}
+                            <small style="margin-left: 10px;">
+                                <a href="{{ model.add_url }}" style="color: #007cba;">
+                                    [+&nbsp;添加]
+                                </a>
+                            </small>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+            {% endif %}
+        </div>
+    {% endfor %}
+</div>
+{% else %}
+    <p>{% trans "You don't have permission to edit anything." %}</p>
+{% endif %}
+
+<script>
+// 添加页面加载动画
+document.addEventListener('DOMContentLoaded', function() {
+    const cards = document.querySelectorAll('.dashboard-card');
+    cards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        setTimeout(() => {
+            card.style.transition = 'all 0.5s ease';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, index * 100);
+    });
+});
+</script>
+{% endblock %} 

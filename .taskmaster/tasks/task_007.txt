@@ -1,0 +1,53 @@
+# Task ID: 7
+# Title: 实现 SPU 属性关联管理
+# Status: pending
+# Dependencies: 5, 6
+# Priority: medium
+# Description: 实现 SPU 的属性关联管理，允许选择可配置属性，并关联到 SPU。
+# Details:
+1. 在 SPU Admin 中添加属性关联功能。
+2. 使用 Django 的 ManyToManyField 或 ForeignKey 关联 SPU 和 Attribute。
+3. 实现动态加载可配置属性的功能。
+
+# Test Strategy:
+1. 在 SPU Admin 中创建 SPU，并关联属性。
+2. 验证属性关联是否正确。
+3. 检查动态加载可配置属性的功能是否正常。
+
+# Subtasks:
+## 1. SPU Admin 属性关联界面开发 [pending]
+### Dependencies: None
+### Description: 在 SPU Admin 后台管理界面中，添加属性关联功能模块，包括属性选择、关联和取消关联等操作界面。
+### Details:
+1. 修改 SPU Admin 的 ModelAdmin 类，添加属性关联的 InlineModelAdmin。
+2. 使用 Django 的 formfield_overrides 定制属性选择的表单字段，使其更易于使用。
+3. 实现前端交互逻辑，允许管理员选择和关联属性。
+
+## 2. SPU 与 Attribute 模型关联设计与实现 [pending]
+### Dependencies: None
+### Description: 设计 SPU 和 Attribute 之间的模型关联关系，选择合适的关联方式（ManyToManyField 或 ForeignKey），并实现数据库模型。
+### Details:
+1. 评估 ManyToManyField 和 ForeignKey 的优缺点，选择最适合整木定制产品库的关联方式。
+2. 创建 SPU 和 Attribute 模型，并定义关联字段。
+3. 考虑属性的类型（例如：颜色、尺寸、材质），并设计相应的字段类型。
+4. 添加必要的数据库索引，优化查询性能。
+
+## 3. 动态加载可配置属性逻辑实现 [pending]
+### Dependencies: 7.2
+### Description: 实现动态加载可配置属性的功能，根据 SPU 的类型或其他条件，动态加载可供选择的属性列表。
+### Details:
+1. 定义属性加载的 API 接口，接收 SPU 类型或其他条件作为参数。
+2. 实现 API 接口的逻辑，根据参数查询数据库，返回可配置的属性列表。
+3. 在 SPU Admin 界面中，调用 API 接口，动态加载属性列表。
+4. 考虑使用缓存机制，优化属性加载的性能。
+
+## 4. SPU 属性关联功能测试与验证 [pending]
+### Dependencies: 7.1, 7.2, 7.3
+### Description: 对 SPU 属性关联功能进行全面测试，验证属性关联的正确性、动态加载功能的有效性以及用户体验。
+### Details:
+1. 创建多个 SPU，并关联不同的属性。
+2. 验证属性关联是否正确，包括数据库中的数据是否正确存储。
+3. 测试动态加载功能，验证是否能够根据 SPU 类型或其他条件，正确加载属性列表。
+4. 进行用户体验测试，验证操作是否流畅、界面是否友好。
+5. 编写测试用例，确保测试覆盖率。
+

@@ -1,0 +1,56 @@
+# Task ID: 5
+# Title: 实现 Category 树状结构管理
+# Status: pending
+# Dependencies: 4
+# Priority: medium
+# Description: 实现 Category 的树状结构管理，允许无限级分类，并支持排序功能。
+# Details:
+1. 使用 Django 模板标签或第三方库（如 mptt）实现树状结构展示。
+2. 在 Category Admin 中添加排序功能，允许调整分类的显示顺序。
+3. 确保分类的层级关系清晰易懂。
+
+# Test Strategy:
+1. 在 Category Admin 中创建多级分类，验证树状结构是否正确显示。
+2. 调整分类的排序，验证排序功能是否生效。
+3. 检查分类的层级关系是否正确。
+
+# Subtasks:
+## 1. 选择 Category 树状结构展示方案 [pending]
+### Dependencies: None
+### Description: 评估 Django 模板标签和第三方库（如 django-mptt）的优缺点，选择最适合整木定制产品库管理系统的方案。考虑易用性、性能和可维护性。
+### Details:
+1. 调研 django-mptt 等第三方库的特性和使用方法。
+2. 评估使用 Django 模板标签手动实现树状结构的复杂度和维护成本。
+3. 考虑数据量增长对性能的影响。
+4. 编写选择方案的理由和评估报告。
+
+## 2. 实现 Category 树状结构展示 [pending]
+### Dependencies: 5.1
+### Description: 根据选定的方案，在 Django Admin 后台中实现 Category 的树状结构展示。确保层级关系清晰易懂，并与现有的 Admin 界面风格保持一致。
+### Details:
+1. 根据选定的方案，编写相应的代码。
+2. 如果使用 django-mptt，则配置模型和模板。
+3. 如果使用 Django 模板标签，则编写递归模板。
+4. 在 Category Admin 中集成树状结构展示。
+5. 优化展示效果，确保层级关系清晰。
+
+## 3. 添加 Category 排序功能 [pending]
+### Dependencies: 5.2
+### Description: 在 Category Admin 中添加排序功能，允许管理员调整分类的显示顺序。实现拖拽排序或手动输入序号的方式。
+### Details:
+1. 确定排序方式：拖拽排序或手动输入序号。
+2. 如果使用拖拽排序，则集成相应的 JavaScript 库。
+3. 如果使用手动输入序号，则添加排序字段到 Category 模型。
+4. 在 Admin 界面中添加排序功能。
+5. 实现排序逻辑，更新数据库中的排序字段。
+
+## 4. 测试 Category 树状结构和排序功能 [pending]
+### Dependencies: 5.3
+### Description: 在 Docker 开发环境中，对 Category 树状结构展示和排序功能进行全面测试。验证树状结构是否正确显示，排序功能是否生效，以及层级关系是否正确。
+### Details:
+1. 创建多级分类，验证树状结构是否正确显示。
+2. 调整分类的排序，验证排序功能是否生效。
+3. 检查分类的层级关系是否正确。
+4. 测试边界情况，例如大量分类的情况。
+5. 编写测试报告，记录测试结果和问题。
+

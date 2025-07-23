@@ -1,0 +1,60 @@
+# Task ID: 6
+# Title: 创建 Brand 和 Attribute 管理界面
+# Status: pending
+# Dependencies: 4
+# Priority: medium
+# Description: 创建 Brand 和 Attribute 的完整管理界面，包括增删改查功能。
+# Details:
+1. 在 Brand Admin 中添加品牌基本信息、Logo 管理和联系人信息。
+2. 在 Attribute Admin 中添加属性定义和属性值标准化功能。
+3. 实现数据的验证和完整性检查。
+
+# Test Strategy:
+1. 在 Brand Admin 中创建、修改和删除品牌信息，验证功能是否正常。
+2. 在 Attribute Admin 中创建、修改和删除属性信息，验证功能是否正常。
+3. 检查数据的验证和完整性检查是否生效。
+
+# Subtasks:
+## 1. 创建 Brand Admin 界面基础框架 [pending]
+### Dependencies: None
+### Description: 创建 Django Admin 界面的基础框架，包括 URL 配置、模板文件和基础视图。
+### Details:
+1. 创建 `brand` 应用。
+2. 在 `brand/urls.py` 中配置 Brand Admin 的 URL。
+3. 创建 `brand/templates/admin/brand` 目录，用于存放 Brand Admin 的模板文件。
+4. 创建基础视图，用于处理 Brand 列表和详情页面。
+
+## 2. 实现 Brand 基本信息和联系人信息管理 [pending]
+### Dependencies: 6.1
+### Description: 在 Brand Admin 界面中添加品牌名称、描述、状态等基本信息和联系人信息的增删改查功能。
+### Details:
+1. 在 Brand 模型中添加品牌名称、描述、状态和联系人信息字段。
+2. 在 Brand Admin 界面中显示和编辑这些字段。
+3. 实现新增、修改和删除 Brand 的功能。
+
+## 3. 实现 Brand Logo 管理 [pending]
+### Dependencies: 6.1
+### Description: 在 Brand Admin 界面中添加 Logo 上传、预览和删除功能。
+### Details:
+1. 在 Brand 模型中添加 Logo 字段，使用 ImageField 存储 Logo 图片。
+2. 在 Brand Admin 界面中添加 Logo 上传控件。
+3. 实现 Logo 预览功能。
+4. 实现 Logo 删除功能。
+
+## 4. 创建 Attribute Admin 界面 [pending]
+### Dependencies: None
+### Description: 创建 Django Admin 界面的基础框架，包括 URL 配置、模板文件和基础视图，用于管理 Attribute。
+### Details:
+1. 创建 `attribute` 应用（如果尚未创建）。
+2. 在 `attribute/urls.py` 中配置 Attribute Admin 的 URL。
+3. 创建 `attribute/templates/admin/attribute` 目录，用于存放 Attribute Admin 的模板文件。
+4. 创建基础视图，用于处理 Attribute 列表和详情页面。
+
+## 5. 实现 Attribute 定义和属性值标准化功能 [pending]
+### Dependencies: 6.4
+### Description: 在 Attribute Admin 界面中添加属性名称、类型、单位等定义和属性值标准化功能，例如统一单位、格式化数据。
+### Details:
+1. 在 Attribute 模型中添加属性名称、类型、单位等字段。
+2. 在 Attribute Admin 界面中显示和编辑这些字段。
+3. 实现属性值标准化功能，例如使用正则表达式进行数据清洗和格式化。
+

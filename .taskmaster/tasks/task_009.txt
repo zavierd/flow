@@ -1,0 +1,66 @@
+# Task ID: 9
+# Title: 实现用户权限和角色管理
+# Status: pending
+# Dependencies: 4
+# Priority: low
+# Description: 实现用户权限和角色管理，允许分配不同的权限给不同的角色。此功能虽然重要，但不是系统展示的核心功能，可以在基础功能完成后再实现。
+# Details:
+1. 使用 Django 内置的权限系统。
+2. 创建不同的角色，例如产品专员、销售设计师和系统管理员。
+3. 为每个角色分配不同的权限。
+4. 在 Admin 界面中添加权限控制。
+
+# Test Strategy:
+1. 创建不同的用户，并分配不同的角色。
+2. 登录 Admin 界面，验证用户是否拥有正确的权限。
+3. 检查权限控制是否生效。
+
+# Subtasks:
+## 1. 创建产品专员角色并分配权限 [pending]
+### Dependencies: None
+### Description: 在 Django Admin 界面中创建名为“产品专员”的角色，并根据整木定制产品库管理系统的 PRD 要求，为其分配相应的权限，例如查看产品信息、编辑产品信息等。
+### Details:
+1. 登录 Django Admin 界面。
+2. 进入“权限”->“角色”页面。
+3. 点击“添加角色”按钮，创建一个名为“产品专员”的角色。
+4. 在角色编辑页面，勾选该角色应具有的权限，例如 `product.view_product`、`product.change_product`。
+5. 保存角色。
+
+## 2. 创建销售设计师角色并分配权限 [pending]
+### Dependencies: None
+### Description: 在 Django Admin 界面中创建名为“销售设计师”的角色，并根据整木定制产品库管理系统的 PRD 要求，为其分配相应的权限，例如查看产品信息、创建设计方案等。
+### Details:
+1. 登录 Django Admin 界面。
+2. 进入“权限”->“角色”页面。
+3. 点击“添加角色”按钮，创建一个名为“销售设计师”的角色。
+4. 在角色编辑页面，勾选该角色应具有的权限，例如 `product.view_product`、`design.add_design`。
+5. 保存角色。
+
+## 3. 创建系统管理员角色并分配权限 [pending]
+### Dependencies: None
+### Description: 在 Django Admin 界面中创建名为“系统管理员”的角色，并为其分配所有权限，使其能够管理整个系统。
+### Details:
+1. 登录 Django Admin 界面。
+2. 进入“权限”->“角色”页面。
+3. 点击“添加角色”按钮，创建一个名为“系统管理员”的角色。
+4. 在角色编辑页面，勾选所有权限。
+5. 保存角色。
+
+## 4. 在 Admin 界面中添加权限控制 [pending]
+### Dependencies: 9.1, 9.2, 9.3
+### Description: 修改 Django Admin 界面，使其能够根据用户的角色显示不同的功能和数据。例如，产品专员只能看到和编辑部分产品信息，而系统管理员可以看到所有信息。
+### Details:
+1. 重写 Django Admin 的 `get_queryset` 方法，根据用户的角色过滤数据。
+2. 重写 Django Admin 的 `get_form` 方法，根据用户的角色显示不同的表单字段。
+3. 使用 Django 的 `permission_required` 装饰器，限制用户访问某些 Admin 页面。
+
+## 5. 测试权限控制功能 [pending]
+### Dependencies: 9.4
+### Description: 创建不同角色的用户，并登录 Admin 界面，验证权限控制功能是否生效。确保每个用户只能访问其被授权的功能和数据。
+### Details:
+1. 创建产品专员用户，并分配“产品专员”角色。
+2. 创建销售设计师用户，并分配“销售设计师”角色。
+3. 创建系统管理员用户，并分配“系统管理员”角色。
+4. 分别使用这些用户登录 Admin 界面，验证其权限是否符合预期。
+5. 尝试访问未授权的页面或功能，验证是否被拒绝。
+

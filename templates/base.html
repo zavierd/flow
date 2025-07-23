@@ -1,0 +1,62 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zh-hans">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}整木定制产品库管理系统{% endblock %}</title>
+    
+    <!-- 基础样式 -->
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- 头部 -->
+    <header class="header">
+        <div class="container">
+            <h1>整木定制产品库管理系统</h1>
+        </div>
+    </header>
+
+    <!-- 导航 -->
+    <nav class="nav">
+        <div class="container">
+            <ul>
+                <li><a href="/">首页</a></li>
+                <li><a href="/admin/">管理后台</a></li>
+                <li><a href="/api/">API 文档</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 主要内容 -->
+    <main class="container">
+        <div class="main-content">
+            {% block content %}
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">欢迎使用整木定制产品库管理系统</h2>
+                </div>
+                <p>这是一个基于 Django 5.0 和 PostgreSQL 的整木定制产品管理系统。</p>
+                <p>系统支持分层产品管理、智能化后台、REST API 等功能。</p>
+                
+                <div style="margin-top: 2rem;">
+                    <a href="/admin/" class="btn">进入管理后台</a>
+                    <a href="/api/" class="btn btn-success">查看 API 文档</a>
+                </div>
+            </div>
+            {% endblock %}
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer style="text-align: center; padding: 2rem 0; color: #666; background-color: #f8f9fa; margin-top: 2rem;">
+        <div class="container">
+            <p>&copy; 2025 整木定制产品库管理系统. 基于 Django 5.0 + PostgreSQL + Redis 构建</p>
+        </div>
+    </footer>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html> 

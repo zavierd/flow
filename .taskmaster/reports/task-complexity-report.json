@@ -1,0 +1,109 @@
+{
+	"meta": {
+		"generatedAt": "2025-07-13T08:56:23.530Z",
+		"tasksAnalyzed": 12,
+		"totalTasks": 12,
+		"analysisCount": 12,
+		"thresholdScore": 5,
+		"projectName": "Taskmaster",
+		"usedResearch": true
+	},
+	"complexityAnalysis": [
+		{
+			"taskId": 1,
+			"taskTitle": "配置 Docker 开发环境",
+			"complexityScore": 7,
+			"recommendedSubtasks": 5,
+			"expansionPrompt": "将配置 Docker 开发环境的任务分解为以下子任务：1. 创建基础 Dockerfile (Python 3.12)。2. 安装 Django 及其依赖。3. 配置 PostgreSQL Docker 服务。4. 配置 Redis Docker 服务。5. 配置 Nginx Docker 服务并反向代理 Django。",
+			"reasoning": "涉及多个服务的协同配置，需要对 Dockerfile 和 docker-compose.yml 有深入理解，网络配置也可能比较复杂。需要分解为更小的可管理单元。"
+		},
+		{
+			"taskId": 2,
+			"taskTitle": "初始化 Django 项目",
+			"complexityScore": 4,
+			"recommendedSubtasks": 4,
+			"expansionPrompt": "将初始化 Django 项目的任务分解为以下子任务：1. 创建 Django 项目。2. 配置数据库连接。3. 配置静态文件服务。4. 创建并配置 .gitignore 文件。",
+			"reasoning": "虽然步骤清晰，但数据库配置和静态文件配置可能需要一些调试。分解后更易于跟踪进度。"
+		},
+		{
+			"taskId": 3,
+			"taskTitle": "定义数据模型并创建迁移",
+			"complexityScore": 8,
+			"recommendedSubtasks": 7,
+			"expansionPrompt": "将定义数据模型并创建迁移的任务分解为以下子任务：1. 定义 Category 模型。2. 定义 Brand 模型。3. 定义 Attribute 和 AttributeValue 模型。4. 定义 SPU 模型。5. 定义 SKU 模型。6. 创建数据库迁移文件。7. 应用数据库迁移。",
+			"reasoning": "数据模型较多，且模型之间的关系可能比较复杂，需要仔细设计。分解为更小的模型定义任务可以降低出错概率。"
+		},
+		{
+			"taskId": 4,
+			"taskTitle": "配置 Django Admin 后台",
+			"complexityScore": 6,
+			"recommendedSubtasks": 5,
+			"expansionPrompt": "将配置 Django Admin 后台的任务分解为以下子任务：1. 注册 Category 模型到 Admin。2. 注册 Brand 模型到 Admin。3. 注册 Attribute, AttributeValue, SPU, SKU 模型到 Admin。4. 定制 Admin 界面（列表展示、搜索等）。5. 添加必要的权限控制。",
+			"reasoning": "涉及多个模型的注册和定制，以及权限控制，需要一定的 Django Admin 经验。分解后可以并行处理。"
+		},
+		{
+			"taskId": 5,
+			"taskTitle": "实现 Category 树状结构管理",
+			"complexityScore": 7,
+			"recommendedSubtasks": 4,
+			"expansionPrompt": "将实现 Category 树状结构管理任务分解为以下子任务：1. 选择树状结构展示方案（模板标签或第三方库）。2. 实现树状结构展示。3. 添加排序功能。4. 测试树状结构和排序功能。",
+			"reasoning": "树状结构的实现方式有多种，需要选择合适的方案。排序功能的实现也需要一定的技巧。需要分解为更具体的实现步骤。"
+		},
+		{
+			"taskId": 6,
+			"taskTitle": "创建 Brand 和 Attribute 管理界面",
+			"complexityScore": 6,
+			"recommendedSubtasks": 5,
+			"expansionPrompt": "将创建 Brand 和 Attribute 管理界面的任务分解为以下子任务：1. 创建 Brand Admin 界面。2. 添加品牌基本信息、Logo 管理和联系人信息。3. 创建 Attribute Admin 界面。4. 添加属性定义和属性值标准化功能。5. 实现数据的验证和完整性检查。",
+			"reasoning": "Brand 和 Attribute 的管理界面都需要实现增删改查功能，以及数据的验证。分解后可以并行处理。"
+		},
+		{
+			"taskId": 7,
+			"taskTitle": "实现 SPU 属性关联管理",
+			"complexityScore": 7,
+			"recommendedSubtasks": 4,
+			"expansionPrompt": "将实现 SPU 属性关联管理任务分解为以下子任务：1. 在 SPU Admin 中添加属性关联功能。2. 实现 SPU 和 Attribute 的关联（ManyToManyField 或 ForeignKey）。3. 实现动态加载可配置属性的功能。4. 测试属性关联功能。",
+			"reasoning": "属性关联的实现方式有多种，需要选择合适的方案。动态加载可配置属性的功能也需要一定的技巧。需要分解为更具体的实现步骤。"
+		},
+		{
+			"taskId": 8,
+			"taskTitle": "实现 SKU 动态配置功能",
+			"complexityScore": 8,
+			"recommendedSubtasks": 5,
+			"expansionPrompt": "将实现 SKU 动态配置功能的任务分解为以下子任务：1. 在 SKU Admin 中添加动态配置功能。2. 使用 Django Admin 的 JavaScript 扩展实现动态加载。3. 根据选择的 SPU，动态加载可配置属性。4. 实现数据的验证。5. 实现数据的完整性检查。",
+			"reasoning": "涉及 Django Admin 的 JavaScript 扩展和 AJAX 技术，需要一定的前端开发经验。动态加载属性配置界面也比较复杂。需要分解为更具体的实现步骤。"
+		},
+		{
+			"taskId": 9,
+			"taskTitle": "实现用户权限和角色管理",
+			"complexityScore": 6,
+			"recommendedSubtasks": 5,
+			"expansionPrompt": "将实现用户权限和角色管理任务分解为以下子任务：1. 创建产品专员角色并分配权限。2. 创建销售设计师角色并分配权限。3. 创建系统管理员角色并分配权限。4. 在 Admin 界面中添加权限控制。5. 测试权限控制功能。",
+			"reasoning": "需要熟悉 Django 的权限系统，并根据不同的角色分配不同的权限。分解后可以更清晰地管理权限。"
+		},
+		{
+			"taskId": 10,
+			"taskTitle": "开发 REST API 接口",
+			"complexityScore": 7,
+			"recommendedSubtasks": 6,
+			"expansionPrompt": "将开发 REST API 接口的任务分解为以下子任务：1. 创建产品查询 API 接口。2. 创建产品详情 API 接口。3. 创建筛选器 API 接口。4. 创建分类 API 接口。5. 创建品牌 API 接口。6. 配置 URL。",
+			"reasoning": "涉及多个 API 接口的开发，需要熟悉 Django REST Framework。分解后可以并行处理。"
+		},
+		{
+			"taskId": 11,
+			"taskTitle": "集成 Redis 缓存",
+			"complexityScore": 5,
+			"recommendedSubtasks": 4,
+			"expansionPrompt": "将集成 Redis 缓存的任务分解为以下子任务：1. 安装 Redis 客户端。2. 配置 Redis 连接信息。3. 在 API 接口中添加缓存逻辑。4. 测试 Redis 缓存是否生效。",
+			"reasoning": "需要熟悉 Redis 的基本使用，以及如何在 Django 中集成 Redis 缓存。分解后可以更清晰地管理缓存逻辑。"
+		},
+		{
+			"taskId": 12,
+			"taskTitle": "配置生产环境",
+			"complexityScore": 6,
+			"recommendedSubtasks": 5,
+			"expansionPrompt": "将配置生产环境的任务分解为以下子任务：1. 配置生产环境的环境变量。2. 配置 Gunicorn。3. 配置 Nginx。4. 编写部署脚本。5. 添加监控和日志功能。",
+			"reasoning": "涉及多个组件的配置，需要熟悉 Linux 服务器和部署流程。分解后可以更清晰地管理部署配置。"
+		}
+	]
+}

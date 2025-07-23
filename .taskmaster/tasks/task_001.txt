@@ -1,0 +1,59 @@
+# Task ID: 1
+# Title: 配置 Docker 开发环境
+# Status: pending
+# Dependencies: None
+# Priority: high
+# Description: 配置 Docker 开发环境，包括 Dockerfile 和 docker-compose.yml 文件，确保 Django、PostgreSQL、Redis 和 Nginx 能够协同工作。
+# Details:
+1. 创建 Dockerfile 文件，指定 Python 3.12 作为基础镜像。
+2. 安装 Django 5.x, Django REST Framework 3.15+, Gunicorn 等依赖。
+3. 配置 docker-compose.yml 文件，定义 Django app, PostgreSQL, Redis, Nginx 服务。
+4. 设置环境变量，如数据库连接信息。
+5. 确保容器间网络互通。
+
+# Test Strategy:
+1. 运行 docker-compose up 命令，确保所有容器成功启动。
+2. 访问 Django 应用，验证是否能够正常响应。
+3. 连接 PostgreSQL 和 Redis 容器，验证连接是否正常。
+
+# Subtasks:
+## 1. 创建基础 Dockerfile (Python 3.12) [pending]
+### Dependencies: None
+### Description: 创建一个 Dockerfile 文件，指定 Python 3.12 作为基础镜像，并安装必要的系统依赖，例如构建工具。
+### Details:
+1. 选择合适的 Python 3.12 基础镜像，例如 `python:3.12-slim-buster`。
+2. 使用 `apt-get update` 和 `apt-get install` 安装构建依赖，例如 `build-essential`、`libpq-dev` 等。
+3. 设置工作目录。
+
+## 2. 安装 Django 及其依赖 [pending]
+### Dependencies: 1.1
+### Description: 在 Dockerfile 中安装 Django 5.x, Django REST Framework 3.15+, Gunicorn 等 Python 依赖。
+### Details:
+1. 使用 `pip install` 命令安装 Django 5.x, Django REST Framework 3.15+, Gunicorn 等依赖。
+2. 将 `requirements.txt` 文件复制到容器中，并使用 `pip install -r requirements.txt` 安装依赖。
+
+## 3. 配置 PostgreSQL Docker 服务 [pending]
+### Dependencies: 1.1
+### Description: 配置 docker-compose.yml 文件，定义 PostgreSQL 服务，并设置数据库连接信息。
+### Details:
+1. 在 docker-compose.yml 文件中添加 PostgreSQL 服务定义，指定镜像版本。
+2. 设置环境变量，例如 `POSTGRES_USER`、`POSTGRES_PASSWORD`、`POSTGRES_DB`。
+3. 定义数据卷，持久化数据库数据。
+
+## 4. 配置 Redis Docker 服务 [pending]
+### Dependencies: 1.1
+### Description: 配置 docker-compose.yml 文件，定义 Redis 服务，并设置 Redis 连接信息。
+### Details:
+1. 在 docker-compose.yml 文件中添加 Redis 服务定义，指定镜像版本。
+2. 设置 Redis 端口映射。
+3. 定义数据卷，持久化 Redis 数据（可选）。
+
+## 5. 配置 Nginx Docker 服务并反向代理 Django [pending]
+### Dependencies: 1.2, 1.3, 1.4
+### Description: 配置 docker-compose.yml 文件，定义 Nginx 服务，并配置 Nginx 反向代理 Django 应用。
+### Details:
+1. 在 docker-compose.yml 文件中添加 Nginx 服务定义，指定镜像版本。
+2. 创建 Nginx 配置文件，配置反向代理规则，将请求转发到 Django 应用。
+3. 将 Nginx 配置文件复制到容器中。
+4. 设置 Nginx 端口映射。
+

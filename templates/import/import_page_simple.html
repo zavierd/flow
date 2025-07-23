@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>产品数据导入</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        .header {
+            text-align: center;
+            padding: 40px 30px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .header h1 {
+            margin: 0 0 8px 0;
+            font-size: 24px;
+            font-weight: 700;
+        }
+        .header p {
+            margin: 0;
+            opacity: 0.9;
+            font-size: 14px;
+        }
+        .main-content {
+            padding: 30px;
+        }
+        .section {
+            margin-bottom: 24px;
+        }
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .import-methods {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        @media (max-width: 640px) {
+            .import-methods {
+                grid-template-columns: 1fr;
+            }
+            .template-options {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+            .quick-actions {
+                justify-content: center;
+            }
+        }
+        .method-option {
+            padding: 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+        .method-option.active {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+        .method-option:hover {
+            border-color: #a0aec0;
+        }
+        .method-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+        .method-title {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 4px;
+        }
+        .method-desc {
+            font-size: 12px;
+            color: #718096;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #4a5568;
+            font-size: 14px;
+        }
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.2s;
+            background: #f8fafc;
+        }
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+            margin-right: 12px;
+        }
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        .btn-secondary {
+            background: #718096;
+        }
+        .btn-secondary:hover {
+            background: #4a5568;
+            transform: translateY(-1px);
+        }
+        .btn:disabled {
+            background: #a0aec0;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .file-drop-zone {
+            border: 2px dashed #cbd5e0;
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f7fafc;
+            margin-bottom: 16px;
+        }
+        .file-drop-zone:hover, .file-drop-zone.dragover {
+            border-color: #667eea;
+            background: #edf2f7;
+        }
+        .quick-actions {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+        .quick-btn {
+            padding: 8px 16px;
+            background: #f7fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 13px;
+            color: #4a5568;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .quick-btn:hover {
+            background: #edf2f7;
+            border-color: #cbd5e0;
+        }
+        .template-options {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+        .template-options label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 0;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .alert {
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .alert-success {
+            background: #f0fff4;
+            color: #22543d;
+            border: 1px solid #9ae6b4;
+        }
+        .alert-danger {
+            background: #fed7d7;
+            color: #742a2a;
+            border: 1px solid #feb2b2;
+        }
+        .alert-info {
+            background: #ebf8ff;
+            color: #2a4365;
+            border: 1px solid #90cdf4;
+        }
+        .hidden { display: none !important; }
+        .fade-in { animation: fadeIn 0.3s ease-in; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .progress-container {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f7fafc;
+            border-radius: 8px;
+            display: none;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+        .progress-text {
+            text-align: center;
+            font-size: 14px;
+            color: #4a5568;
+        }
+        .data-stats {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+        .stat-item {
+            background: #f7fafc;
+            padding: 12px 16px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            text-align: center;
+            flex: 1;
+            min-width: 120px;
+        }
+        .stat-number {
+            font-size: 18px;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 4px;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #718096;
+        }
+        .feature-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: #e6fffa;
+            color: #234e52;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+            margin-left: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="header">
+                <h1>🏠 产品数据导入</h1>
+                <p>智能导入系统，支持AI数据识别和多格式处理</p>
+                <div style="margin-top: 16px; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
+                    <span class="feature-badge">🤖 AI智能识别</span>
+                    <span class="feature-badge">📊 多格式支持</span>
+                    <span class="feature-badge">⚡ 实时处理</span>
+                </div>
+            </div>
+            
+            <div class="main-content">
+                <!-- 快速操作 -->
+                <div class="quick-actions">
+                    <a href="/admin/" class="quick-btn" target="_blank">⚙️ 管理后台</a>
+                    <button type="button" class="quick-btn" onclick="showQuickStats()">📊 数据统计</button>
+                    <a href="/clear-data/" class="quick-btn" target="_blank" style="color: #e53e3e;">🗑️ 清理数据</a>
+                </div>
+
+                <!-- 导入方式选择 -->
+                <div class="section">
+                    <div class="section-title">📋 选择导入方式</div>
+                    <div class="import-methods">
+                        <div class="method-option active" onclick="selectMethod('paste')" id="pasteMethod">
+                            <div class="method-icon">📝</div>
+                            <div class="method-title">粘贴数据</div>
+                            <div class="method-desc">直接粘贴表格数据</div>
+                        </div>
+                        <div class="method-option" onclick="selectMethod('file')" id="fileMethod">
+                            <div class="method-icon">📁</div>
+                            <div class="method-title">上传文件</div>
+                            <div class="method-desc">上传CSV/Excel文件</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 模板下载 -->
+                <div class="section">
+                    <div class="section-title">📥 下载模板</div>
+                    <div class="template-options">
+                        <label>
+                            <input type="radio" name="templateType" value="ai_data" checked>
+                            <span>AI数据格式（推荐）</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="templateType" value="royana_import">
+                            <span>传统格式</span>
+                        </label>
+                        <label>
+                            <input type="checkbox" id="includeSample" checked>
+                            <span>包含示例</span>
+                        </label>
+                    </div>
+                    <button class="btn btn-secondary" onclick="downloadTemplate()">
+                        📥 下载模板
+                    </button>
+                </div>
+
+                <!-- 导入表单 -->
+                <form id="importForm" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <div class="section">
+                        <div class="section-title">🚀 开始导入</div>
+                        
+                        <!-- 任务名称 -->
+                        <div class="form-group">
+                            <label for="taskName">任务名称</label>
+                            <input type="text" id="taskName" name="name" class="form-control" 
+                                   placeholder="自动生成任务名称">
+                        </div>
+
+                        <!-- 文件上传区域 -->
+                        <div id="fileUploadArea" class="form-group hidden">
+                            <label>选择文件</label>
+                            <div class="file-drop-zone" id="fileDropZone">
+                                <p>📁 点击选择文件或拖拽文件到此处</p>
+                                <p style="font-size: 12px; color: #718096;">支持 .xlsx, .xls, .csv 格式，最大 10MB</p>
+                            </div>
+                            <input type="file" id="file" name="file_path" accept=".xlsx,.xls,.csv" class="form-control" style="display: none;">
+                        </div>
+
+                        <!-- 粘贴数据区域 -->
+                        <div id="pasteArea" class="form-group">
+                            <label for="pasteData">粘贴表格数据</label>
+                            <textarea id="pasteData" name="paste_data" class="form-control" rows="12"
+                                      placeholder="请在此处粘贴表格数据...
+
+支持格式：
+• Markdown表格：| 产品描述 | 产品编码 | 系列 |
+• Excel复制：制表符分隔的数据
+• CSV格式：逗号分隔的数据
+
+示例：
+| 产品描述 | 产品编码 | 系列 | 宽度 | 高度 |
+| 单门底柜 | N-U30-7256-L/R | NOVO | 80 | 72 |"></textarea>
+                        </div>
+
+                        <!-- 操作按钮 -->
+                        <div style="display: flex; gap: 12px; align-items: center;">
+                            <button type="button" class="btn btn-secondary" onclick="previewData()" id="previewBtn">
+                                👁️ 预览数据
+                            </button>
+                            <button type="submit" class="btn" id="submitBtn">
+                                🚀 开始导入
+                            </button>
+                        </div>
+                    </div>
+
+                    <input type="hidden" name="task_type" value="products">
+                </form>
+
+                <!-- 进度显示 -->
+                <div class="progress-container" id="progressContainer">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div class="progress-text" id="progressText">准备导入...</div>
+                </div>
+
+                <!-- 结果显示 -->
+                <div id="resultContainer"></div>
+
+                <!-- 使用指南 -->
+                <div class="section" style="margin-top: 40px; padding-top: 24px; border-top: 1px solid #e2e8f0;">
+                    <div class="section-title">💡 使用指南</div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
+                        <div style="background: #f7fafc; padding: 16px; border-radius: 8px;">
+                            <div style="font-weight: 600; color: #2d3748; margin-bottom: 8px;">📥 1. 下载模板</div>
+                            <div style="font-size: 13px; color: #4a5568;">选择AI数据格式模板，包含示例数据，了解标准格式</div>
+                        </div>
+                        <div style="background: #f7fafc; padding: 16px; border-radius: 8px;">
+                            <div style="font-weight: 600; color: #2d3748; margin-bottom: 8px;">📝 2. 准备数据</div>
+                            <div style="font-size: 13px; color: #4a5568;">按模板格式整理产品数据，支持Excel、CSV、Markdown格式</div>
+                        </div>
+                        <div style="background: #f7fafc; padding: 16px; border-radius: 8px;">
+                            <div style="font-weight: 600; color: #2d3748; margin-bottom: 8px;">👁️ 3. 预览数据</div>
+                            <div style="font-size: 13px; color: #4a5568;">粘贴数据后点击预览，检查格式是否正确</div>
+                        </div>
+                        <div style="background: #f7fafc; padding: 16px; border-radius: 8px;">
+                            <div style="font-weight: 600; color: #2d3748; margin-bottom: 8px;">🚀 4. 开始导入</div>
+                            <div style="font-size: 13px; color: #4a5568;">确认无误后开始导入，系统会自动处理和验证数据</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 全局变量
+        let currentMethod = 'paste';
+        let isImporting = false;
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            initializePage();
+            setupEventListeners();
+            generateTaskName();
+        });
+
+        // 初始化页面
+        function initializePage() {
+            selectMethod('paste');
+
+            // 设置默认模板类型为AI数据格式
+            const aiRadio = document.querySelector('input[name="templateType"][value="ai_data"]');
+            if (aiRadio) aiRadio.checked = true;
+        }
+
+        // 设置事件监听器
+        function setupEventListeners() {
+            // 表单提交
+            document.getElementById('importForm').addEventListener('submit', handleSubmit);
+
+            // 文件拖拽
+            const dropZone = document.getElementById('fileDropZone');
+            dropZone.addEventListener('click', () => document.getElementById('file').click());
+            dropZone.addEventListener('dragover', handleDragOver);
+            dropZone.addEventListener('drop', handleDrop);
+            dropZone.addEventListener('dragleave', handleDragLeave);
+
+            // 文件选择
+            document.getElementById('file').addEventListener('change', handleFileSelect);
+
+            // 模板类型变化
+            document.querySelectorAll('input[name="templateType"]').forEach(radio => {
+                radio.addEventListener('change', updateTemplateDescription);
+            });
+        }
+
+        // 选择导入方式
+        function selectMethod(method) {
+            currentMethod = method;
+
+            // 更新UI状态
+            document.querySelectorAll('.method-option').forEach(option => {
+                option.classList.remove('active');
+            });
+            document.getElementById(method + 'Method').classList.add('active');
+
+            // 显示/隐藏相应区域
+            const fileArea = document.getElementById('fileUploadArea');
+            const pasteArea = document.getElementById('pasteArea');
+
+            if (method === 'file') {
+                fileArea.classList.remove('hidden');
+                pasteArea.classList.add('hidden');
+            } else {
+                fileArea.classList.add('hidden');
+                pasteArea.classList.remove('hidden');
+            }
+        }
+
+        // 生成任务名称
+        function generateTaskName() {
+            const now = new Date();
+            const timestamp = now.toISOString().slice(0, 19).replace(/[-:]/g, '').replace('T', '_');
+            const templateType = document.querySelector('input[name="templateType"]:checked')?.value || 'ai_data';
+            const typeName = templateType === 'ai_data' ? 'AI数据' : '传统';
+
+            document.getElementById('taskName').placeholder = `${typeName}导入_${timestamp}`;
+        }
+
+        // 下载模板
+        function downloadTemplate() {
+            const templateType = document.querySelector('input[name="templateType"]:checked')?.value || 'ai_data';
+            const includeSample = document.getElementById('includeSample').checked;
+
+            const params = new URLSearchParams({
+                template_type: templateType,
+                include_sample: includeSample
+            });
+
+            window.open(`/products/download-template/?${params}`, '_blank');
+        }
+
+        // 显示快速统计
+        function showQuickStats() {
+            // 这里可以添加快速统计的弹窗或跳转
+            alert('功能开发中...');
+        }
+
+        // 预览数据
+        function previewData() {
+            const pasteData = document.getElementById('pasteData').value.trim();
+            if (!pasteData) {
+                showAlert('请先粘贴要预览的数据', 'danger');
+                return;
+            }
+
+            try {
+                // 简单解析数据
+                const lines = pasteData.split('\n').filter(line => line.trim());
+                if (lines.length < 2) {
+                    showAlert('数据格式不正确，至少需要标题行和数据行', 'danger');
+                    return;
+                }
+
+                // 解析标题行
+                let headers = [];
+                const firstLine = lines[0].trim();
+
+                if (firstLine.includes('|')) {
+                    // Markdown表格格式
+                    headers = firstLine.split('|').map(h => h.trim()).filter(h => h);
+                } else if (firstLine.includes('\t')) {
+                    // 制表符分隔
+                    headers = firstLine.split('\t').map(h => h.trim());
+                } else {
+                    // CSV格式
+                    headers = firstLine.split(',').map(h => h.trim());
+                }
+
+                // 解析数据行（最多显示5行）
+                const dataRows = [];
+                for (let i = 1; i < Math.min(lines.length, 6); i++) {
+                    const line = lines[i].trim();
+                    if (line.includes('---') || line.includes(':---')) continue; // 跳过Markdown分隔行
+
+                    let cells = [];
+                    if (line.includes('|')) {
+                        cells = line.split('|').map(c => c.trim()).filter(c => c);
+                    } else if (line.includes('\t')) {
+                        cells = line.split('\t').map(c => c.trim());
+                    } else {
+                        cells = line.split(',').map(c => c.trim());
+                    }
+
+                    if (cells.length > 0) {
+                        dataRows.push(cells);
+                    }
+                }
+
+                // 显示预览
+                showDataPreview(headers, dataRows, lines.length - 1);
+
+            } catch (error) {
+                showAlert('数据解析失败: ' + error.message, 'danger');
+            }
+        }
+
+        // 显示数据预览
+        function showDataPreview(headers, dataRows, totalRows) {
+            const container = document.getElementById('resultContainer');
+
+            let tableHtml = `
+                <div class="alert alert-info fade-in">
+                    <strong>📋 数据预览</strong><br>
+                    检测到 ${headers.length} 列，${totalRows} 行数据（显示前5行）
+                </div>
+                <div style="overflow-x: auto; margin-bottom: 20px;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+                        <thead>
+                            <tr style="background: #f7fafc;">
+            `;
+
+            headers.forEach(header => {
+                tableHtml += `<th style="padding: 8px; border: 1px solid #e2e8f0; font-weight: 600;">${header}</th>`;
+            });
+
+            tableHtml += '</tr></thead><tbody>';
+
+            dataRows.forEach((row, index) => {
+                tableHtml += `<tr style="background: ${index % 2 === 0 ? 'white' : '#f8fafc'};">`;
+                headers.forEach((_, colIndex) => {
+                    const cellValue = row[colIndex] || '';
+                    tableHtml += `<td style="padding: 8px; border: 1px solid #e2e8f0;">${cellValue}</td>`;
+                });
+                tableHtml += '</tr>';
+            });
+
+            tableHtml += '</tbody></table></div>';
+
+            if (totalRows > 5) {
+                tableHtml += `<div class="alert alert-info">还有 ${totalRows - 5} 行数据未显示...</div>`;
+            }
+
+            container.innerHTML = tableHtml;
+        }
+
+        // 处理表单提交
+        async function handleSubmit(e) {
+            e.preventDefault();
+
+            if (isImporting) return;
+
+            const formData = new FormData(e.target);
+
+            // 验证数据
+            if (currentMethod === 'paste') {
+                const pasteData = document.getElementById('pasteData').value.trim();
+                if (!pasteData) {
+                    showAlert('请粘贴要导入的数据', 'danger');
+                    return;
+                }
+                formData.set('csv_data', pasteData);
+            } else {
+                const fileInput = document.getElementById('file');
+                if (!fileInput.files.length) {
+                    showAlert('请选择要导入的文件', 'danger');
+                    return;
+                }
+            }
+
+            // 设置任务名称
+            const taskName = document.getElementById('taskName').value.trim() ||
+                           document.getElementById('taskName').placeholder;
+            formData.set('name', taskName);
+
+            // 开始导入
+            await startImport(formData);
+        }
+
+        // 开始导入
+        async function startImport(formData) {
+            isImporting = true;
+
+            // 更新UI状态
+            const submitBtn = document.getElementById('submitBtn');
+            const progressContainer = document.getElementById('progressContainer');
+            const resultContainer = document.getElementById('resultContainer');
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = '导入中...';
+            progressContainer.style.display = 'block';
+            resultContainer.innerHTML = '';
+
+            try {
+                // 发送请求
+                const response = await fetch('/products/ai-data/import/', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRFToken': getCsrfToken()
+                    }
+                });
+
+                const result = await response.json();
+
+                // 显示结果
+                if (result.success) {
+                    showImportResult(result);
+                } else {
+                    showAlert(result.error || '导入失败', 'danger');
+                }
+
+            } catch (error) {
+                console.error('导入失败:', error);
+                showAlert('导入失败: ' + error.message, 'danger');
+            } finally {
+                // 恢复UI状态
+                isImporting = false;
+                submitBtn.disabled = false;
+                submitBtn.textContent = '🚀 开始导入';
+                progressContainer.style.display = 'none';
+            }
+        }
+
+        // 显示导入结果
+        function showImportResult(result) {
+            const container = document.getElementById('resultContainer');
+            const successRate = result.total_rows > 0 ?
+                (result.success_rows / result.total_rows * 100).toFixed(1) : 0;
+
+            container.innerHTML = `
+                <div class="alert alert-success fade-in">
+                    <div>
+                        <strong>🎉 导入完成！</strong><br>
+                        总行数: ${result.total_rows} |
+                        成功: ${result.success_rows} |
+                        失败: ${result.error_rows} |
+                        成功率: ${successRate}%
+                    </div>
+                </div>
+            `;
+
+            // 如果有错误，显示详情链接
+            if (result.error_rows > 0) {
+                container.innerHTML += `
+                    <div class="alert alert-info">
+                        <a href="/admin/products/importerror/?task__id=${result.task_id}" target="_blank">
+                            📋 查看错误详情
+                        </a>
+                    </div>
+                `;
+            }
+        }
+
+        // 显示提示信息
+        function showAlert(message, type = 'info') {
+            const container = document.getElementById('resultContainer');
+            container.innerHTML = `
+                <div class="alert alert-${type} fade-in">
+                    ${message}
+                </div>
+            `;
+        }
+
+        // 获取CSRF令牌
+        function getCsrfToken() {
+            return document.querySelector('[name=csrfmiddlewaretoken]').value;
+        }
+
+        // 文件拖拽处理
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.currentTarget.classList.add('dragover');
+        }
+
+        function handleDragLeave(e) {
+            e.currentTarget.classList.remove('dragover');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('dragover');
+
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                document.getElementById('file').files = files;
+                updateFileDisplay(files[0]);
+            }
+        }
+
+        // 文件选择处理
+        function handleFileSelect(e) {
+            const file = e.target.files[0];
+            if (file) {
+                updateFileDisplay(file);
+            }
+        }
+
+        // 更新文件显示
+        function updateFileDisplay(file) {
+            const dropZone = document.getElementById('fileDropZone');
+            dropZone.innerHTML = `
+                <p>📁 已选择文件: ${file.name}</p>
+                <p style="font-size: 12px; color: #718096;">
+                    大小: ${(file.size / 1024 / 1024).toFixed(2)} MB
+                </p>
+            `;
+        }
+
+        // 更新模板描述
+        function updateTemplateDescription() {
+            generateTaskName();
+        }
+    </script>
+</body>
+</html>

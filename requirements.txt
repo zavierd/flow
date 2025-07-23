@@ -1,0 +1,37 @@
+# Django 核心框架
+Django==5.0.6
+djangorestframework==3.15.2
+
+# 数据库相关
+psycopg2-binary==2.9.9
+redis==5.0.7
+django-redis==5.4.0
+
+# 应用服务器
+gunicorn==22.0.0
+
+# 开发工具
+django-debug-toolbar==4.4.2
+django-extensions==3.2.3
+
+# 环境变量管理
+python-decouple==3.8
+
+# CORS 支持
+django-cors-headers==4.3.1
+
+# 分页
+django-filter==24.2
+
+# 时间处理
+pytz==2024.1
+
+# 图片处理
+Pillow==10.3.0
+
+# 树状结构管理
+django-mptt==0.16.0
+
+# Excel处理
+pandas==2.0.3
+openpyxl==3.1.2

@@ -1,0 +1,88 @@
+services:
+  # PostgreSQL 数据库服务
+  db:
+    image: postgres:16-alpine
+    container_name: flow_db
+    environment:
+      POSTGRES_DB: product_library
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres123
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+    restart: "no"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d product_library"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Redis 缓存服务
+  redis:
+    image: redis:7-alpine
+    container_name: flow_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: "no"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Django 应用服务
+  web:
+    build:
+      context: .
+      args:
+        - HTTP_PROXY=http://host.docker.internal:7897
+        - HTTPS_PROXY=http://host.docker.internal:7897
+        - NO_PROXY=localhost,127.0.0.1,db,redis
+    container_name: flow_web
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py collectstatic --noinput &&
+             gunicorn --bind 0.0.0.0:8000 product_library.wsgi:application"
+    volumes:
+      - .:/app
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      - HTTP_PROXY=http://host.docker.internal:7897
+      - HTTPS_PROXY=http://host.docker.internal:7897
+      - NO_PROXY=localhost,127.0.0.1,db,redis
+    restart: "no"
+
+  # Nginx 反向代理服务
+  nginx:
+    image: nginx:alpine
+    container_name: flow_nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./static:/app/static
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+    depends_on:
+      - web
+    restart: "no"
+
+volumes:
+  postgres_data:
+  redis_data:
+  static_volume:
+  media_volume: 

@@ -1,0 +1,685 @@
+/* SPU 属性内联编辑样式 */
+
+/* 属性信息显示区域 */
+.attribute-info {
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.attribute-type-badge {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 10px;
+    color: white;
+    margin-bottom: 3px;
+}
+
+.attribute-code {
+    color: #666;
+    font-weight: bold;
+}
+
+.attribute-unit {
+    color: #666;
+}
+
+.attribute-desc {
+    color: #999;
+    font-size: 11px;
+}
+
+/* 属性值预览区域 */
+.values-preview {
+    font-size: 11px;
+    max-width: 200px;
+}
+
+.value-chip {
+    background: #f8f9fa;
+    padding: 1px 4px;
+    margin-right: 2px;
+    border-radius: 2px;
+    border: 1px solid #e9ecef;
+    display: inline-block;
+}
+
+.color-preview {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border: 1px solid #ddd;
+    border-radius: 2px;
+    margin-right: 3px;
+    vertical-align: middle;
+}
+
+.image-preview {
+    width: 16px;
+    height: 16px;
+    margin-right: 3px;
+    border-radius: 2px;
+}
+
+.no-values {
+    color: #999;
+    font-size: 11px;
+}
+
+.more-values {
+    color: #999;
+    font-size: 11px;
+}
+
+/* 属性选择下拉框优化 */
+.attribute-select {
+    min-width: 250px;
+}
+
+/* 内联表格优化 */
+.spu-attribute-inline .form-row {
+    border-bottom: 1px solid #e9ecef;
+    padding: 8px 0;
+}
+
+.spu-attribute-inline .form-row:hover {
+    background-color: #f8f9fa;
+}
+
+/* 删除按钮优化 */
+.spu-attribute-inline .delete input[type="checkbox"] {
+    transform: scale(1.2);
+}
+
+/* 必填字段标识 */
+.spu-attribute-inline .required-field {
+    color: #dc3545;
+    font-weight: bold;
+}
+
+/* 排序字段优化 */
+.spu-attribute-inline .order-field {
+    width: 60px;
+    text-align: center;
+}
+
+/* 默认值字段优化 */
+.spu-attribute-inline .default-value-field {
+    min-width: 120px;
+}
+
+/* 默认值下拉选择器样式 */
+.spu-attribute-inline .field-default_value select {
+    min-width: 150px;
+    padding: 4px 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: white;
+    font-size: 12px;
+    color: #495057;
+}
+
+.spu-attribute-inline .field-default_value select:focus {
+    border-color: #007cba;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 186, 0.25);
+    outline: none;
+}
+
+.spu-attribute-inline .field-default_value select option {
+    padding: 4px 8px;
+    color: #495057;
+}
+
+.spu-attribute-inline .field-default_value select option[value=""] {
+    color: #6c757d;
+    font-style: italic;
+}
+
+/* 默认值字段帮助文本 */
+.spu-attribute-inline .field-default_value .help {
+    font-size: 11px;
+    color: #6c757d;
+    margin-top: 2px;
+    font-style: italic;
+}
+
+/* 默认值字段转换动画 */
+.spu-attribute-inline .field-default_value input,
+.spu-attribute-inline .field-default_value select {
+    transition: all 0.3s ease;
+}
+
+/* 默认值字段为空时的样式 */
+.spu-attribute-inline .field-default_value input:placeholder-shown,
+.spu-attribute-inline .field-default_value select:invalid {
+    color: #6c757d;
+}
+
+/* 动态属性加载相关样式 */
+
+/* 推荐属性容器 */
+.attribute-recommendations {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.recommendations-header h4 {
+    margin: 0 0 5px 0;
+    color: #495057;
+    font-size: 14px;
+}
+
+.recommendations-info {
+    margin: 0 0 15px 0;
+    color: #6c757d;
+    font-size: 12px;
+}
+
+.recommendations-loading {
+    text-align: center;
+    padding: 20px;
+    color: #6c757d;
+    font-style: italic;
+}
+
+.no-recommendations {
+    text-align: center;
+    padding: 20px;
+    color: #6c757d;
+    font-style: italic;
+}
+
+/* 推荐属性列表 */
+.recommendations-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 10px;
+}
+
+.recommendation-item {
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    padding: 10px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.recommendation-item:hover {
+    border-color: #007cba;
+    box-shadow: 0 2px 4px rgba(0, 123, 186, 0.1);
+}
+
+.recommendation-header {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-bottom: 5px;
+}
+
+.recommendation-name {
+    font-weight: 600;
+    color: #495057;
+}
+
+.recommendation-type {
+    background: #6c757d;
+    color: white;
+    padding: 1px 4px;
+    border-radius: 2px;
+    font-size: 10px;
+}
+
+.recommendation-unit {
+    color: #6c757d;
+    font-size: 11px;
+}
+
+.recommendation-level {
+    padding: 1px 6px;
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: 500;
+    margin-left: auto;
+}
+
+.recommendation-high .recommendation-level {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.recommendation-medium .recommendation-level {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.recommendation-low .recommendation-level {
+    background-color: #e2e3e5;
+    color: #383d41;
+}
+
+.recommendation-optional .recommendation-level {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.recommendation-stats {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 8px;
+    font-size: 11px;
+    color: #6c757d;
+}
+
+.usage-count::before {
+    content: "📊 ";
+}
+
+.usage-percentage::before {
+    content: "📈 ";
+}
+
+.recommendation-actions {
+    text-align: right;
+}
+
+.btn-add-recommendation {
+    background-color: #007cba;
+    color: white;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 3px;
+    font-size: 11px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-add-recommendation:hover {
+    background-color: #005a87;
+}
+
+.btn-add-recommendation:disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
+}
+
+/* 属性搜索容器 */
+.attribute-search-container {
+    background: #f1f3f4;
+    border: 1px solid #dadce0;
+    border-radius: 6px;
+    margin-bottom: 20px;
+}
+
+.search-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    border-bottom: 1px solid #dadce0;
+    background: #e8f0fe;
+    border-radius: 6px 6px 0 0;
+}
+
+.search-header h4 {
+    margin: 0;
+    color: #1967d2;
+    font-size: 14px;
+}
+
+.btn-toggle-search {
+    background: transparent;
+    border: 1px solid #1967d2;
+    color: #1967d2;
+    padding: 4px 8px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 11px;
+    transition: all 0.2s;
+}
+
+.btn-toggle-search:hover {
+    background: #1967d2;
+    color: white;
+}
+
+.search-body {
+    padding: 15px;
+}
+
+.search-form {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+#attribute-search-input {
+    flex: 1;
+    min-width: 200px;
+    padding: 6px 10px;
+    border: 1px solid #dadce0;
+    border-radius: 4px;
+    font-size: 13px;
+}
+
+#attribute-type-filter {
+    padding: 6px 10px;
+    border: 1px solid #dadce0;
+    border-radius: 4px;
+    font-size: 13px;
+    min-width: 120px;
+}
+
+#btn-search-attributes {
+    background: #1967d2;
+    color: white;
+    border: none;
+    padding: 6px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: background-color 0.2s;
+}
+
+#btn-search-attributes:hover {
+    background: #1557b0;
+}
+
+/* 搜索结果 */
+.search-results {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.loading, .error, .no-results {
+    text-align: center;
+    padding: 20px;
+    color: #6c757d;
+    font-style: italic;
+}
+
+.error {
+    color: #dc3545;
+}
+
+.search-results-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.search-result-item {
+    background: white;
+    border: 1px solid #e9ecef;
+    border-radius: 4px;
+    padding: 12px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.search-result-item:hover {
+    border-color: #007cba;
+    box-shadow: 0 2px 4px rgba(0, 123, 186, 0.1);
+}
+
+.result-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 5px;
+    flex-wrap: wrap;
+}
+
+.result-name {
+    font-weight: 600;
+    color: #495057;
+}
+
+.result-type {
+    background: #6c757d;
+    color: white;
+    padding: 1px 4px;
+    border-radius: 2px;
+    font-size: 10px;
+}
+
+.result-unit {
+    color: #6c757d;
+    font-size: 11px;
+}
+
+.result-code {
+    color: #007cba;
+    font-size: 11px;
+    font-family: monospace;
+    margin-left: auto;
+}
+
+.result-description {
+    color: #6c757d;
+    font-size: 11px;
+    margin-bottom: 8px;
+    line-height: 1.4;
+}
+
+.result-values {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+}
+
+.value-preview {
+    font-size: 10px;
+    border-radius: 2px;
+}
+
+.value-preview.color-preview {
+    width: 16px;
+    height: 16px;
+    border: 1px solid #ddd;
+    display: inline-block;
+}
+
+.value-preview.text-preview {
+    background: #f8f9fa;
+    padding: 1px 4px;
+    border: 1px solid #e9ecef;
+}
+
+.result-actions {
+    text-align: right;
+}
+
+.btn-add-search-result {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 3px;
+    font-size: 11px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-add-search-result:hover {
+    background-color: #218838;
+}
+
+.btn-add-search-result:disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
+}
+
+/* 快速添加按钮 */
+.quick-add-buttons {
+    margin: 10px 0;
+}
+
+.btn-quick-add {
+    background: #17a2b8;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-quick-add:hover {
+    background: #138496;
+}
+
+/* 消息提示样式 */
+.alert {
+    padding: 8px 12px;
+    margin-bottom: 10px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.alert-success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+
+.alert-error, .alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+.alert-warning {
+    color: #856404;
+    background-color: #fff3cd;
+    border-color: #ffeaa7;
+}
+
+.alert-info {
+    color: #0c5460;
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .values-preview {
+        max-width: 150px;
+        font-size: 10px;
+    }
+    
+    .attribute-info {
+        font-size: 11px;
+    }
+    
+    .value-chip {
+        font-size: 10px;
+        padding: 1px 3px;
+    }
+    
+    .recommendations-list {
+        grid-template-columns: 1fr;
+    }
+    
+    .search-form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    #attribute-search-input {
+        min-width: auto;
+    }
+    
+    .result-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+    
+    .result-code {
+        margin-left: 0;
+    }
+}
+
+/* 表单验证错误样式 */
+.spu-attribute-inline .error {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+.spu-attribute-inline .errorlist {
+    color: #dc3545;
+    font-size: 11px;
+    margin: 2px 0;
+    padding: 0;
+    list-style: none;
+}
+
+/* 加载动画 */
+.loading-spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #007cba;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* 工具提示样式 */
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 200px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -100px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 11px;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* 成功状态样式 */
+.success-message {
+    color: #28a745;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+/* 警告状态样式 */
+.warning-message {
+    color: #ffc107;
+    font-size: 11px;
+    font-weight: bold;
+} 

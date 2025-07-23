@@ -1,0 +1,57 @@
+# Task ID: 2
+# Title: 初始化 Django 项目
+# Status: pending
+# Dependencies: 1
+# Priority: high
+# Description: 初始化 Django 项目，创建项目目录结构，并进行基础配置，例如设置数据库连接、静态文件服务等。
+# Details:
+1. 使用 django-admin startproject 命令创建项目。
+2. 配置 settings.py 文件，设置数据库连接（PostgreSQL 或 MySQL），根据实际情况选择。
+3. 配置静态文件服务，设置 STATIC_URL 和 STATIC_ROOT。
+4. 创建 .gitignore 文件，排除敏感信息和临时文件。
+
+# Test Strategy:
+1. 运行 python manage.py runserver 命令，确保 Django 项目能够正常启动。
+2. 访问 Django 默认页面，验证是否能够正常显示。
+3. 检查静态文件是否能够正常访问。
+
+# Subtasks:
+## 1. 创建 Django 项目 [pending]
+### Dependencies: None
+### Description: 使用 django-admin startproject 命令创建 Django 项目，并创建项目目录结构。
+### Details:
+1. 确保已安装 Django。
+2. 运行 django-admin startproject 项目名称 命令。
+3. 检查项目目录结构是否正确生成。
+
+## 2. 配置数据库连接 [pending]
+### Dependencies: 2.1
+### Description: 配置 Django 项目的 settings.py 文件，设置数据库连接（PostgreSQL 或 MySQL）。
+### Details:
+1. 根据 Docker 开发环境选择合适的数据库（PostgreSQL 或 MySQL）。
+2. 安装相应的数据库驱动。
+3. 修改 settings.py 文件中的 DATABASES 设置，配置数据库连接信息（主机、端口、用户名、密码、数据库名称）。
+4. 运行 python manage.py migrate 命令，创建数据库表。
+
+## 3. 配置静态文件服务 [pending]
+### Dependencies: 2.1
+### Description: 配置 Django 项目的 settings.py 文件，设置 STATIC_URL 和 STATIC_ROOT，以便提供静态文件服务。
+### Details:
+1. 在 settings.py 文件中设置 STATIC_URL 为静态文件的 URL 前缀。
+2. 设置 STATIC_ROOT 为静态文件存放的目录。
+3. 在 templates 目录下创建静态文件目录，例如 css, js, images。
+4. 运行 python manage.py collectstatic 命令，将静态文件收集到 STATIC_ROOT 目录。
+
+## 4. 创建并配置 .gitignore 文件 [pending]
+### Dependencies: 2.1
+### Description: 创建 .gitignore 文件，排除敏感信息和临时文件，例如数据库密码、日志文件、.pyc 文件等。
+### Details:
+1. 在项目根目录下创建 .gitignore 文件。
+2. 添加需要排除的文件和目录，例如：
+   - *.pyc
+   - __pycache__/
+   - db.sqlite3
+   - .env
+   - /static
+   - /media
+

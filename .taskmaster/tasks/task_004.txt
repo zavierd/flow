@@ -1,0 +1,64 @@
+# Task ID: 4
+# Title: 配置 Django Admin 后台
+# Status: pending
+# Dependencies: 3
+# Priority: high
+# Description: 配置 Django Admin 后台，注册 Category, Brand, Attribute, AttributeValue, SPU, SKU 模型，并进行基本的定制。
+# Details:
+1. 在 admin.py 文件中注册 Category, Brand, Attribute, AttributeValue, SPU, SKU 模型。
+2. 定制 Admin 界面，例如修改列表展示字段、添加搜索功能等。
+3. 对于 Category 模型，实现树状结构展示。
+4. 添加必要的权限控制。
+
+# Test Strategy:
+1. 登录 Django Admin 后台，检查是否能够正常访问 Category, Brand, Attribute, AttributeValue, SPU, SKU 管理界面。
+2. 验证 Admin 界面的定制是否生效。
+3. 检查权限控制是否生效。
+
+# Subtasks:
+## 1. 注册 Category 模型到 Admin 后台 [pending]
+### Dependencies: None
+### Description: 在 Django Admin 后台注册 Category 模型，使其可以通过 Admin 界面进行管理。
+### Details:
+1. 打开 `admin.py` 文件。
+2. 使用 `admin.site.register(Category)` 注册 Category 模型。
+3. 检查 Admin 后台是否显示 Category 模型。
+
+## 2. 注册 Brand 模型到 Admin 后台 [pending]
+### Dependencies: None
+### Description: 在 Django Admin 后台注册 Brand 模型，使其可以通过 Admin 界面进行管理。
+### Details:
+1. 打开 `admin.py` 文件。
+2. 使用 `admin.site.register(Brand)` 注册 Brand 模型。
+3. 检查 Admin 后台是否显示 Brand 模型。
+
+## 3. 注册 Attribute, AttributeValue, SPU, SKU 模型到 Admin 后台 [pending]
+### Dependencies: None
+### Description: 在 Django Admin 后台注册 Attribute, AttributeValue, SPU, SKU 模型，使其可以通过 Admin 界面进行管理。
+### Details:
+1. 打开 `admin.py` 文件。
+2. 使用 `admin.site.register(Attribute)` 注册 Attribute 模型。
+3. 使用 `admin.site.register(AttributeValue)` 注册 AttributeValue 模型。
+4. 使用 `admin.site.register(SPU)` 注册 SPU 模型。
+5. 使用 `admin.site.register(SKU)` 注册 SKU 模型。
+6. 检查 Admin 后台是否显示所有模型。
+
+## 4. 定制 Admin 界面（列表展示、搜索等） [pending]
+### Dependencies: 4.1, 4.2, 4.3
+### Description: 定制 Django Admin 界面，包括修改列表展示字段、添加搜索功能等，提升用户体验。
+### Details:
+1. 创建 Admin 类，继承自 `admin.ModelAdmin`。
+2. 使用 `list_display` 属性定义列表展示字段。
+3. 使用 `search_fields` 属性添加搜索功能。
+4. 使用 `list_filter` 属性添加过滤器。
+5. 将 Admin 类注册到对应的模型。
+
+## 5. 添加必要的权限控制 [pending]
+### Dependencies: 4.4
+### Description: 为 Django Admin 后台添加必要的权限控制，确保只有授权用户才能访问和修改数据。
+### Details:
+1. 定义权限。
+2. 将权限分配给用户或用户组。
+3. 在 Admin 类中使用 `has_add_permission`、`has_change_permission`、`has_delete_permission` 等方法控制权限。
+4. 验证权限控制是否生效。
+
